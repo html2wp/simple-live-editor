@@ -1,0 +1,15 @@
+{
+    "name": "html2wp/simple-live-editor",
+    "description": "Simple live editor for WordPress",
+    "type": "wordpress-plugin",
+    "require": {
+        "electrolinux/phpquery": "*"
+    },
+    "license": "GPLv2",
+    "authors": [
+        {
+            "name": "Harri Heljala",
+            "email": "harri@htmltowordpress.io"
+        }
+    ]
+}
