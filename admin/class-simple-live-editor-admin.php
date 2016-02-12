@@ -41,6 +41,15 @@ class Simple_Live_Editor_Admin {
 	private $version;
 
 	/**
+	 * The DOM of current template
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      string    $dom    The DOM of current template.
+	 */
+	private $dom;
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
@@ -61,18 +70,6 @@ class Simple_Live_Editor_Admin {
 	 */
 	public function enqueue_styles() {
 
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Simple_Live_Editor_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Simple_Live_Editor_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/simple-live-editor-admin.css', array(), $this->version, 'all' );
 
 	}
@@ -84,38 +81,74 @@ class Simple_Live_Editor_Admin {
 	 */
 	public function enqueue_scripts() {
 
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Simple_Live_Editor_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Simple_Live_Editor_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
+		global $wp_customize;
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/simple-live-editor-admin.js', array( 'jquery' ), $this->version, false );
+		if ( isset( $wp_customize ) ) {
+			wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/simple-live-editor-admin.js', array( 'jquery' ), $this->version, false );
+			wp_localize_script( $this->plugin_name, 'sleSettings', array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'page_template' => get_page_template() ) );
+		}
 
 	}
 
 
 	public function prepare_template_for_editing( $template ) {
 
-		$dom = phpQuery::newDocumentFilePHP( $template );
+		global $wp_customize;
+
+		if ( !isset( $wp_customize ) ) {
+			return $template;
+		}
+
+		$this->get_document( $template );
+
+		ob_start();
+		eval( '?>' . $this->dom->php() . '<?php;' );
+		$this_string = ob_get_contents();
+		ob_end_flush();
+
+		return;
+
+	}
+
+
+	public function save_content() {
+
+		if ( !isset( $_POST['template'] ) || !isset( $_POST['content'] ) ) {
+			wp_die();
+		}
+
+		$this->get_document( $_POST['template'] );
+
+		foreach ( $_POST['content'] as $index => $html ) {
+			$this->dom->find( ".sle-editable-text[data-sle-dom-index=$index]" )->html( $html );
+		}
+
+		$this->save_document( $_POST['template'] );
+
+		echo 'Saved.';
+
+		wp_die();
+
+	}
+
+
+	private function get_document( $template ) {
+
+		$this->dom = phpQuery::newDocumentFilePHP( $template );
 
 		/**
 		 * Create our indexing for all HTML elements
 		 */
-		foreach ( $dom->find( '*:not(php)' ) as $key => $el ) {
+		foreach ( $this->dom->find( '*:not(php)' ) as $key => $el ) {
+
 			pq( $el )->attr( 'data-sle-dom-index', $key );
+
 		}
 
 		/**
 		 * Find all text nodes and mark their parents as editable elements
 		 */
-		foreach ( $dom->find( '*:not(php)' )->contents() as $key => $el ) {
+		foreach ( $this->dom->find( '*:not(php)' )->contents() as $key => $el ) {
 
 			/**
 			 * Mark text nodes parents as editable elements unless, text node empty
@@ -126,12 +159,14 @@ class Simple_Live_Editor_Admin {
 
 		}
 
-		ob_start();
-		eval( '?>' . $dom->php() . '<?php;' );
-		$this_string = ob_get_contents();
-		ob_end_flush();
+	}
 
-		return;
+
+	private function save_document( $template ) {
+
+		$this->dom->find( '*:not(php)' )->removeAttr( 'data-sle-dom-index' )->removeClass( 'sle-editable-text' );
+
+		file_put_contents( $template, $this->dom->php() );
 
 	}
 
