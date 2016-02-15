@@ -2,8 +2,14 @@
     "name": "html2wp/simple-live-editor",
     "description": "Simple live editor for WordPress",
     "type": "wordpress-plugin",
+    "repositories": [
+        {
+          "type": "git",
+          "url": "https://github.com/html2wp/phpquery.git"
+        }
+    ],
     "require": {
-        "electrolinux/phpquery": "*",
+        "html2wp/phpquery": "dev-dev",
         "composer/installers": "~1.0"
     },
     "license": "GPLv2",
