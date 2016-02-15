@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "html2wp/phpquery": "dev-dev",
+        "html2wp/phpquery": "dev-master",
         "composer/installers": "~1.0"
     },
     "license": "GPLv2",
