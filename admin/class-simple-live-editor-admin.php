@@ -70,7 +70,6 @@ class Simple_Live_Editor_Admin {
 	 */
 	public function enqueue_styles() {
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/simple-live-editor-admin.css', array(), $this->version, 'all' );
 
 	}
 
@@ -119,13 +118,11 @@ class Simple_Live_Editor_Admin {
 
 		$this->get_document( $_POST['template'] );
 
-		foreach ( $_POST['content'] as $index => $html ) {
-			$this->dom->find( ".sle-editable-text[data-sle-dom-index=$index]" )->html( $html );
+		foreach ( array_filter( $_POST['content'] ) as $index => $html ) {
+			$this->dom->find( ".sle-editable-text[data-sle-dom-index=$index]" )->html( stripslashes( $html ) );
 		}
 
 		$this->save_document( $_POST['template'] );
-
-		echo 'Saved.';
 
 		wp_die();
 

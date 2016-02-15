@@ -156,7 +156,7 @@ class Simple_Live_Editor {
 
 		$plugin_admin = new Simple_Live_Editor_Admin( $this->get_plugin_name(), $this->get_version() );
 
-		//$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
 		$this->loader->add_action( 'template_include', $plugin_admin, 'prepare_template_for_editing' );

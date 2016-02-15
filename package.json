@@ -1,0 +1,23 @@
+{
+  "name": "simple-live-editor",
+  "version": "1.0.0",
+  "description": "Simple live editor for WordPress",
+  "main": "simple-live-editor.php",
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git@bitbucket.org:betwixt/simple-live-editor.git"
+  },
+  "keywords": [
+    "wordpress",
+    "plugin",
+    "simple",
+    "live",
+    "edit",
+    "content",
+    "management"
+  ],
+  "author": "Harri Heljala <harri@htmltowordpress.io>",
+  "license": "GPLv2"
+}
