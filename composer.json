@@ -3,7 +3,8 @@
     "description": "Simple live editor for WordPress",
     "type": "wordpress-plugin",
     "require": {
-        "electrolinux/phpquery": "*"
+        "electrolinux/phpquery": "*",
+        "composer/installers": "~1.0"
     },
     "license": "GPLv2",
     "authors": [
@@ -11,8 +12,5 @@
             "name": "Harri Heljala",
             "email": "harri@htmltowordpress.io"
         }
-    ],
-    "require": {
-        "composer/installers": "~1.0"
-    }
+    ]
 }
