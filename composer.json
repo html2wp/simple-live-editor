@@ -11,5 +11,8 @@
             "name": "Harri Heljala",
             "email": "harri@htmltowordpress.io"
         }
-    ]
+    ],
+    "require": {
+        "composer/installers": "~1.0"
+    }
 }
