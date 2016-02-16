@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b87383f1f125d7d444e25926f0909add",
-    "content-hash": "e650c6dfc1ebedc7ce6cdfa4232e8cfb",
+    "hash": "5f1146b1a7fb28825cd6d5348ddc20f2",
+    "content-hash": "736147f4c4f6a548f6d95ef93acd0172",
     "packages": [
         {
             "name": "composer/installers",
@@ -107,11 +107,11 @@
         },
         {
             "name": "html2wp/phpquery",
-            "version": "dev-master",
+            "version": "dev-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/html2wp/phpquery.git",
-                "reference": "50478a6e0f9a23916d891632289942250033074b"
+                "reference": "bf44281145aac200c95cb7cee1291eaee91098ed"
             },
             "require": {
                 "composer/installers": "~1.0"
@@ -139,7 +139,7 @@
             ],
             "description": "phpQuery is a server-side, chainable, CSS3 selector driven Document Object Model (DOM) API based on jQuery JavaScript Library",
             "homepage": "http://code.google.com/p/phpquery/",
-            "time": "2016-02-15 19:12:05"
+            "time": "2016-02-16 10:23:24"
         }
     ],
     "packages-dev": [],
