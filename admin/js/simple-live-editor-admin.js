@@ -7,12 +7,12 @@
 
 		$( 'body' ).on( 'input blur keyup paste copy cut delete mouseup', '.sle-editable-text', function( e ) {
 
-			top.wp.customize.state( 'saved' ).set( false );
+			parent.wp.customize.state( 'saved' ).set( false );
 
 		});
 
 
-		top.wp.customize.bind( 'saved', function() {
+		parent.wp.customize.bind( 'saved', function() {
 
 			var data = {
 				'action': 'sle_save_content',
