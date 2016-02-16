@@ -114,6 +114,11 @@ class Simple_Live_Editor {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-simple-live-editor-i18n.php';
 
 		/**
+		 * The static helper functions
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-simple-live-editor-helpers.php';
+
+		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-simple-live-editor-admin.php';

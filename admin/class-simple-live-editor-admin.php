@@ -83,7 +83,7 @@ class Simple_Live_Editor_Admin {
 		global $wp_customize;
 
 		if ( isset( $wp_customize ) ) {
-			wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/simple-live-editor-admin.js', array( 'jquery' ), $this->version, false );
+			wp_enqueue_script( $this->plugin_name, Helpers::get_dir_url( __FILE__ ) . 'js/simple-live-editor-admin.js', array( 'jquery' ), $this->version, false );
 			wp_localize_script( $this->plugin_name, 'sleSettings', array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'page_template' => get_page_template() ) );
 		}
 
