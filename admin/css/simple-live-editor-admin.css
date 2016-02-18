@@ -1,4 +1,42 @@
-/**
- * All of the CSS for your admin-specific functionality should be
- * included in this file.
- */
+.sle-image-wrapper {
+	position: relative;
+}
+
+.sle-image-wrapper:hover .sle-editable-image {
+	opacity: 0.5;
+}
+
+.sle-image-wrapper .sle-image-edit-icon {
+	position: absolute;
+	right: 0;
+	display: none;
+    height: 26px;
+    width: 26px;
+    border: transparent solid 1px;
+    border-radius: 100%;
+    font-size: 16px;
+    line-height: 26px;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: top;
+    overflow: hidden;
+    transition: none;
+    border-color: transparent;
+    background: #23282D;
+    color: #eee;
+}
+
+.sle-image-wrapper:hover .sle-image-edit-icon {
+    display: inline-block;
+}
+
+.sle-image-wrapper:hover .sle-image-edit-icon:hover {
+	color: #00b9eb;
+}
+
+.sle-image-edit-icon:before {
+    content: "\f464";
+    font: 400 20px/1 dashicons;
+    position: relative;
+    top: 1px;
+}

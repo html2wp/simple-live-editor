@@ -70,6 +70,11 @@ class Simple_Live_Editor_Admin {
 	 */
 	public function enqueue_styles() {
 
+		global $wp_customize;
+
+		if ( isset( $wp_customize ) ) {
+			wp_enqueue_style( $this->plugin_name, Helpers::get_dir_url( __FILE__ ) . 'css/simple-live-editor-admin.css', array( 'dashicons' ), $this->version, 'all' );
+		}
 
 	}
 
@@ -118,8 +123,20 @@ class Simple_Live_Editor_Admin {
 
 		$this->get_document( $_POST['template'] );
 
-		foreach ( array_filter( $_POST['content'] ) as $index => $html ) {
-			$this->dom->find( ".sle-editable-text[data-sle-dom-index=$index]" )->html( stripslashes( $html ) );
+		if ( isset( $_POST['content']['texts'] ) ) {
+
+			foreach ( array_filter( $_POST['content']['texts'] ) as $index => $html ) {
+				$this->dom->find( ".sle-editable-text[data-sle-dom-index=$index]" )->html( stripslashes( $html ) );
+			}
+
+		}
+
+		if ( isset( $_POST['content']['images'] ) ) {
+
+			foreach ( array_filter( $_POST['content']['images'] ) as $index => $src ) {
+				$this->dom->find( ".sle-editable-image[data-sle-dom-index=$index]" )->attr( 'src', stripslashes( $src ) );
+			}
+
 		}
 
 		$this->save_document( $_POST['template'] );
@@ -155,6 +172,11 @@ class Simple_Live_Editor_Admin {
 			}
 
 		}
+
+		/**
+		 * Find all images mark them as editable elements
+		 */
+		$this->dom->find( 'img' )->addClass( 'sle-editable-image' );
 
 	}
 
