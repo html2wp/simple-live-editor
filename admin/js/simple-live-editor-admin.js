@@ -35,6 +35,29 @@
 			.after( '<a href="javascript:;" class="sle-image-edit-icon sle-js-edit-image" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
 		});
 
+		$( '.sle-image-edit-icon' ).each( function() {
+
+			var $image = $( this ).siblings( '.sle-editable-image' ).first(),
+				imageHeight = $image.height(),
+				imageWidth = $image.width(),
+				imageTopOffset = parseInt( $image.css( 'marginTop' ) )+ parseInt( $image.css( 'paddingTop' ) ) + parseInt( $image.css( 'borderTop' ) ),
+				iconHeight = $( this ).outerHeight( true ),
+				iconWidth = $( this ).outerWidth( true ),
+				css = { top: imageTopOffset + imageHeight / 2 - iconHeight / 2 };
+
+			if ( $image.css('float') === 'right' ) {
+				var positionSide = 'Right';
+			} else {
+				var positionSide = 'Left';
+			}
+
+			var imageSideOffset = parseInt( $image.css( 'margin' + positionSide ) ) + parseInt( $image.css( 'padding' + positionSide ) ) + parseInt( $image.css( 'border' + positionSide ) );
+			css[ positionSide.toLowerCase() ] = imageSideOffset + imageWidth / 2 - iconWidth / 2;
+
+			$( this ).css( css );
+
+		});
+
 		$( 'body' ).on( 'click', '.sle-js-edit-image', function( event ) {
 
 		    event.preventDefault();

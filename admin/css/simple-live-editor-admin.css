@@ -1,21 +1,22 @@
 .sle-image-wrapper {
 	position: relative;
+    clear: both;
 }
 
 .sle-image-wrapper:hover .sle-editable-image {
 	opacity: 0.5;
+    cursor: pointer;
 }
 
 .sle-image-wrapper .sle-image-edit-icon {
 	position: absolute;
-	right: 0;
 	display: none;
-    height: 26px;
-    width: 26px;
+    height: 31px;
+    width: 31px;
     border: transparent solid 1px;
     border-radius: 100%;
-    font-size: 16px;
-    line-height: 26px;
+    font-size: 21px;
+    line-height: 31px;
     text-align: center;
     text-decoration: none;
     vertical-align: top;
@@ -24,6 +25,7 @@
     border-color: transparent;
     background: #23282D;
     color: #eee;
+    z-index: 9999;
 }
 
 .sle-image-wrapper:hover .sle-image-edit-icon {
@@ -38,5 +40,5 @@
     content: "\f464";
     font: 400 20px/1 dashicons;
     position: relative;
-    top: 1px;
+    top: 2px;
 }
