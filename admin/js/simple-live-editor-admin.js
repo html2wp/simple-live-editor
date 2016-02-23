@@ -29,6 +29,9 @@
 		var file_frame,
 			target;
 
+		// Disable links
+		$( 'a' ).attr( 'href', 'javascript:' );
+
 		$( '.sle-editable-image' ).each( function( index ) {
 			$( this )
 			.wrap( '<div class="sle-image-wrapper"></div>' )

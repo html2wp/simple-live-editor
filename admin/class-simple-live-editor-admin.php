@@ -3,7 +3,7 @@
 /**
  * The admin-specific functionality of the plugin.
  *
- * @link       http://helja.la/
+ * @link       http://htmltowordpress.io/
  * @since      1.0.0
  *
  * @package    Simple_Live_Editor
@@ -134,7 +134,17 @@ class Simple_Live_Editor_Admin {
 		if ( isset( $_POST['content']['images'] ) ) {
 
 			foreach ( array_filter( $_POST['content']['images'] ) as $index => $src ) {
-				$this->dom->find( ".sle-editable-image[data-sle-dom-index=$index]" )->attr( 'src', stripslashes( $src ) );
+
+				foreach ( $this->dom->find( ".sle-editable-image[data-sle-dom-index=$index]" ) as $key => $el ) {
+
+					if ( pq( $el )->is( '[data-src]' ) ) {
+						pq( $el )->attr( 'data-src', stripslashes( $src ) );
+					} else {
+						pq( $el )->attr( 'src', stripslashes( $src ) );
+					}
+
+				}
+
 			}
 
 		}

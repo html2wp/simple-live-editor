@@ -3,7 +3,7 @@
 /**
  * Register all actions and filters for the plugin
  *
- * @link       http://helja.la/
+ * @link       http://htmltowordpress.io/
  * @since      1.0.0
  *
  * @package    Simple_Live_Editor

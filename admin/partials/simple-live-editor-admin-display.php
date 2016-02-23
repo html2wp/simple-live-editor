@@ -5,7 +5,7 @@
  *
  * This file is used to markup the admin-facing aspects of the plugin.
  *
- * @link       http://helja.la/
+ * @link       http://htmltowordpress.io/
  * @since      1.0.0
  *
  * @package    Simple_Live_Editor
