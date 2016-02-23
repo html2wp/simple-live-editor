@@ -40,7 +40,7 @@
 			var $image = $( this ).siblings( '.sle-editable-image' ).first(),
 				imageHeight = $image.height(),
 				imageWidth = $image.width(),
-				imageTopOffset = parseInt( $image.css( 'marginTop' ) )+ parseInt( $image.css( 'paddingTop' ) ) + parseInt( $image.css( 'borderTop' ) ),
+				imageTopOffset = parseInt( $image.css( 'marginTop' ) ) + parseInt( $image.css( 'paddingTop' ) ) + parseInt( $image.css( 'borderTop' ) ),
 				iconHeight = $( this ).outerHeight( true ),
 				iconWidth = $( this ).outerWidth( true ),
 				css = { top: imageTopOffset + imageHeight / 2 - iconHeight / 2 };
@@ -58,11 +58,15 @@
 
 		});
 
-		$( 'body' ).on( 'click', '.sle-js-edit-image', function( event ) {
+		$( 'body' ).on( 'click', '.sle-js-edit-image, .sle-editable-image', function( event ) {
 
 		    event.preventDefault();
 
-		    target = $( '.sle-editable-image[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
+		    if ( $( event.target ).is( '.sle-editable-image' ) ) {
+		    	target = event.target;
+		    } else {
+		    	target = $( '.sle-editable-image[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
+		    }
 
 		    // If the media frame already exists, reopen it.
 		    if ( file_frame ) {
