@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Simple live editor for WordPress",
   "main": "simple-live-editor.php",
-  "dependencies": {},
+  "dependencies": {
+    "medium-editor": "5.10.0"
+  },
   "devDependencies": {},
   "repository": {
     "type": "git",

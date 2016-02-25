@@ -73,7 +73,9 @@ class Simple_Live_Editor_Admin {
 		global $wp_customize;
 
 		if ( isset( $wp_customize ) ) {
-			wp_enqueue_style( $this->plugin_name, Helpers::get_dir_url( __FILE__ ) . 'css/simple-live-editor-admin.css', array( 'dashicons' ), $this->version, 'all' );
+			wp_enqueue_style( 'medium-editor', Helpers::get_dir_url( __FILE__ ) . '../node_modules/medium-editor/dist/css/medium-editor.css' );
+			wp_enqueue_style( 'medium-editor-theme', Helpers::get_dir_url( __FILE__ ) . '../node_modules/medium-editor/dist/css/themes/bootstrap.css', array( 'medium-editor' ) );
+			wp_enqueue_style( $this->plugin_name, Helpers::get_dir_url( __FILE__ ) . 'css/simple-live-editor-admin.css', array( 'dashicons',  'medium-editor-theme' ), $this->version, 'all' );
 		}
 
 	}
@@ -88,7 +90,8 @@ class Simple_Live_Editor_Admin {
 		global $wp_customize;
 
 		if ( isset( $wp_customize ) ) {
-			wp_enqueue_script( $this->plugin_name, Helpers::get_dir_url( __FILE__ ) . 'js/simple-live-editor-admin.js', array( 'jquery' ), $this->version, false );
+			wp_enqueue_script( 'medium-editor', Helpers::get_dir_url( __FILE__ ) . '../node_modules/medium-editor/dist/js/medium-editor.js' );
+			wp_enqueue_script( $this->plugin_name, Helpers::get_dir_url( __FILE__ ) . 'js/simple-live-editor-admin.js', array( 'jquery', 'medium-editor' ), $this->version, false );
 			wp_localize_script( $this->plugin_name, 'sleSettings', array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'page_template' => get_page_template() ) );
 		}
 
@@ -106,7 +109,7 @@ class Simple_Live_Editor_Admin {
 		$this->get_document( $template );
 
 		ob_start();
-		eval( '?>' . $this->dom->php() . '<?php;' );
+		eval( '?>' . $this->dom->php() );
 		$this_string = ob_get_contents();
 		ob_end_flush();
 
@@ -158,28 +161,75 @@ class Simple_Live_Editor_Admin {
 
 	private function get_document( $template ) {
 
+		$phrasing_content = 'a, abbr, map area, audio, b, bdi, bdo, br, button, canvas, cite, code, data, datalist, del, dfn, em, embed, i, iframe, img, input, ins, kbd, keygen, label, map, mark, math, meter, noscript, object, output, progress, q, ruby, s, samp, script, select, small, span, strong, sub, sup, svg, template, textarea, time, u, var, video, wbr, text';
+
+		$heading_content = 'h1, h2, h3, h4, h5, h6';
+
 		$this->dom = phpQuery::newDocumentFilePHP( $template );
-
-		/**
-		 * Create our indexing for all HTML elements
-		 */
-		foreach ( $this->dom->find( '*:not(php)' ) as $key => $el ) {
-
-			pq( $el )->attr( 'data-sle-dom-index', $key );
-
-		}
 
 		/**
 		 * Find all text nodes and mark their parents as editable elements
 		 */
-		foreach ( $this->dom->find( '*:not(php)' )->contents() as $key => $el ) {
+		foreach ( $this->dom->find( '*:not(php)' )->contents() as $key => $element ) {
 
-			/**
-			 * Mark text nodes parents as editable elements unless, text node empty
-			 */
-			if ( $el->nodeType === XML_TEXT_NODE && preg_match( '/\S/', $el->nodeValue ) ) {
-				pq( $el )->parent()->addClass( 'sle-editable-text' );
+			// Don't do anything if parent already an editable field
+			if ( count( pq( $element )->parents( '.sle-editable-text' ) ) > 0 ) {
+				continue;
 			}
+
+			// Don't do anything if any of the siblings are php tags
+			if ( count( pq( $element )->siblings( 'php' ) ) > 0 ) {
+				continue;
+			}
+
+			// Mark text nodes parents as editable elements unless, text node empty
+			if ( $element->nodeType === XML_TEXT_NODE && preg_match( '/\S/', $element->nodeValue ) ) {
+
+				// If the parent is not 'Phrasing content or headings or paragraph' and the acutal element has siblings, wrap the element with div
+				if ( count( pq( $element )->parent()->not( $phrasing_content )->not( $heading_content )->not( 'p' ) ) > 0 && count( pq( $element )->siblings() ) > 0 ) {
+					pq( $element )->wrap( '<div class="sle-wrapper-element"></div>' );
+				}
+
+				pq( $element )->parent()->addClass( 'sle-editable-text' );
+			}
+
+		}
+
+		foreach ( $this->dom->find( '.sle-editable-text' ) as $key => $element ) {
+
+			// Don't do anything if parent already an editable field
+			if ( count( pq( $element )->parents( '.sle-editable-text' ) ) > 0 ) {
+				continue;
+			}
+
+			// The number of siblings of our target element
+			$siblings_length = count( pq( $element )->siblings() );
+
+			// The number of siblings of our target element that are text elements			
+			$sibling_text_elements_length = count( pq( $element )->siblings( '.sle-editable-text' ) );
+
+			// If all the siblings are text elements, we will combine them to one editable field
+			if ( $siblings_length > 0 && $sibling_text_elements_length === $siblings_length ) {
+
+				pq( $element )->parent()->addClass( 'sle-editable-text' );
+
+				pq( $element )->siblings()->andSelf()->removeClass( 'sle-editable-text' );
+
+			}
+
+		}
+
+		/**
+		 * Wrap p tags for better editing functionality
+		 */
+		foreach ( $this->dom->find( 'p.sle-editable-text' ) as $key => $element ) {
+
+			// Don't do anything if parent already an editable field
+			if ( count( pq( $element )->parents( '.sle-editable-text' ) ) > 0 ) {
+				continue;
+			}
+
+			pq( $element )->nextAll( 'p.sle-editable-text' )->andSelf()->removeClass( 'sle-editable-text' )->wrapAll( '<div class="sle-wrapper-element sle-editable-text"></div>' );
 
 		}
 
@@ -188,12 +238,30 @@ class Simple_Live_Editor_Admin {
 		 */
 		$this->dom->find( 'img' )->addClass( 'sle-editable-image' );
 
+
+		/**
+		 * Create our indexing for all HTML elements
+		 */
+		foreach ( $this->dom->find( '*:not(php)' ) as $key => $element ) {
+
+			pq( $element )->attr( 'data-sle-dom-index', $key );
+
+		}
+
 	}
 
 
 	private function save_document( $template ) {
 
-		$this->dom->find( '*:not(php)' )->removeAttr( 'data-sle-dom-index' )->removeClass( 'sle-editable-text' );
+		// Get rid of wrappers
+		foreach ( $this->dom->find( '.sle-wrapper-element' ) as $key => $element ) {
+
+			pq( $element )->replaceWith( pq( $element )->php() );
+
+		}
+
+		// Remove tmp attributes and classes
+		$this->dom->find( '*:not(php)' )->removeAttr( 'data-sle-dom-index' )->removeClass( 'sle-editable-text sle-editable-image' );
 
 		file_put_contents( $template, $this->dom->php() );
 

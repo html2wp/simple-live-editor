@@ -111,10 +111,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/html2wp/phpquery.git",
-                "reference": "bf44281145aac200c95cb7cee1291eaee91098ed"
-            },
-            "require": {
-                "composer/installers": "~1.0"
+                "reference": "2aae646a9fb8c99444af85bc962bf67530153187"
             },
             "type": "library",
             "autoload": {
@@ -139,7 +136,7 @@
             ],
             "description": "phpQuery is a server-side, chainable, CSS3 selector driven Document Object Model (DOM) API based on jQuery JavaScript Library",
             "homepage": "http://code.google.com/p/phpquery/",
-            "time": "2016-02-16 10:23:24"
+            "time": "2016-02-25 16:23:32"
         }
     ],
     "packages-dev": [],

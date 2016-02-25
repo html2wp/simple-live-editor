@@ -11,8 +11,8 @@
 		/**
 		 * Text editing
 		 */
-		
-		$( '.sle-editable-text' ).attr( 'contenteditable', 'true' );
+
+		var editor = new MediumEditor( '.sle-editable-text' );
 
 		$( 'body' ).on( 'input blur keyup paste copy cut delete mouseup', '.sle-editable-text', function( e ) {
 
@@ -28,9 +28,6 @@
 		
 		var file_frame,
 			target;
-
-		// Disable links
-		$( 'a' ).attr( 'href', 'javascript:' );
 
 		$( '.sle-editable-image' ).each( function( index ) {
 			$( this )
