@@ -10,7 +10,8 @@
     ],
     "require": {
         "html2wp/phpquery": "dev-dev",
-        "composer/installers": "~1.0"
+        "composer/installers": "~1.0",
+        "ezyang/htmlpurifier": "*"
     },
     "license": "GPLv2",
     "authors": [

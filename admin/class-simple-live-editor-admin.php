@@ -120,6 +120,9 @@ class Simple_Live_Editor_Admin {
 
 	public function save_content() {
 
+		$purifier_config = HTMLPurifier_Config::createDefault();
+		$purifier = new HTMLPurifier( $purifier_config );
+
 		if ( !isset( $_POST['template'] ) || !isset( $_POST['content'] ) ) {
 			wp_die();
 		}
@@ -129,7 +132,7 @@ class Simple_Live_Editor_Admin {
 		if ( isset( $_POST['content']['texts'] ) ) {
 
 			foreach ( array_filter( $_POST['content']['texts'] ) as $index => $html ) {
-				$this->dom->find( ".sle-editable-text[data-sle-dom-index=$index]" )->html( stripslashes( $html ) );
+				$this->dom->find( ".sle-editable-text[data-sle-dom-index=$index]" )->html( $purifier->purify( stripslashes( $html ) ) );
 			}
 
 		}
@@ -138,14 +141,13 @@ class Simple_Live_Editor_Admin {
 
 			foreach ( array_filter( $_POST['content']['images'] ) as $index => $src ) {
 
-				foreach ( $this->dom->find( ".sle-editable-image[data-sle-dom-index=$index]" ) as $key => $el ) {
+				$src = esc_url( stripslashes( $src ) );
+				$element = $this->dom->find( ".sle-editable-image[data-sle-dom-index=$index]" )->first();
 
-					if ( pq( $el )->is( '[data-src]' ) ) {
-						pq( $el )->attr( 'data-src', stripslashes( $src ) );
-					} else {
-						pq( $el )->attr( 'src', stripslashes( $src ) );
-					}
-
+				if ( $element->is( '[data-src]' ) ) {
+					$element->attr( 'data-src', $src );
+				} else {
+					$element->attr( 'src', $src );
 				}
 
 			}
@@ -191,30 +193,6 @@ class Simple_Live_Editor_Admin {
 				}
 
 				pq( $element )->parent()->addClass( 'sle-editable-text' );
-			}
-
-		}
-
-		foreach ( $this->dom->find( '.sle-editable-text' ) as $key => $element ) {
-
-			// Don't do anything if parent already an editable field
-			if ( count( pq( $element )->parents( '.sle-editable-text' ) ) > 0 ) {
-				continue;
-			}
-
-			// The number of siblings of our target element
-			$siblings_length = count( pq( $element )->siblings() );
-
-			// The number of siblings of our target element that are text elements			
-			$sibling_text_elements_length = count( pq( $element )->siblings( '.sle-editable-text' ) );
-
-			// If all the siblings are text elements, we will combine them to one editable field
-			if ( $siblings_length > 0 && $sibling_text_elements_length === $siblings_length ) {
-
-				pq( $element )->parent()->addClass( 'sle-editable-text' );
-
-				pq( $element )->siblings()->andSelf()->removeClass( 'sle-editable-text' );
-
 			}
 
 		}

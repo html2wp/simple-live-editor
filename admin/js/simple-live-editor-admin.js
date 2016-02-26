@@ -12,7 +12,11 @@
 		 * Text editing
 		 */
 
-		var editor = new MediumEditor( '.sle-editable-text' );
+		var editor = new MediumEditor( '.sle-editable-text', {
+		    toolbar: {
+		        buttons: [ 'anchor' ]
+		    }
+		});
 
 		$( 'body' ).on( 'input blur keyup paste copy cut delete mouseup', '.sle-editable-text', function( e ) {
 
