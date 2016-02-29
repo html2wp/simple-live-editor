@@ -1,4 +1,4 @@
-=== Plugin Name ===
+=== Simple Live Editor ===
 Contributors: harzzn
 Donate link: http://htmltowordpress.io/
 Tags: simple, live, edit, content, management
