@@ -4,7 +4,7 @@
   "description": "Simple live editor for WordPress",
   "main": "simple-live-editor.php",
   "dependencies": {
-    "medium-editor": "5.10.0"
+    "medium-editor": "html2wp/medium-editor#dev"
   },
   "devDependencies": {},
   "repository": {

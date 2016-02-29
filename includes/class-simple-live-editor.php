@@ -151,12 +151,23 @@ class Simple_Live_Editor {
 	 */
 	private function define_admin_hooks() {
 
+		/**
+		 * Init
+		 */
 		$plugin_admin = new Simple_Live_Editor_Admin( $this->get_plugin_name(), $this->get_version() );
 
+		/**
+		 * Customize view
+		 * These hooks are actually in the public scope for them to work in the customize view
+		 * The customize view check needs to be done in the callback
+		 */
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-
 		$this->loader->add_action( 'template_include', $plugin_admin, 'prepare_template_for_editing' );
+
+		/**
+		 * Ajax
+		 */
 		$this->loader->add_action( 'wp_ajax_sle_save_content', $plugin_admin, 'save_content' );
 
 	}

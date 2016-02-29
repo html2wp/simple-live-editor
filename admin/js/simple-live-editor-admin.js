@@ -12,7 +12,7 @@
 		 * Text editing
 		 */
 
-		var editor = new MediumEditor( '.sle-editable-text', {
+		var editor = new MediumEditor( '.sle-editable-text:not(a)', {
 		    toolbar: {
 		        buttons: [ 'anchor' ]
 		    }
@@ -23,6 +23,54 @@
 			content.texts[ $( event.target ).data( 'sle-dom-index' ) ] = $( event.target ).html();
 
 			parent.wp.customize.state( 'saved' ).set( false );
+
+		});
+
+		// See: http://stackoverflow.com/a/20398132/3073849
+		$( '.sle-editable-text' ).keypress( function( event ) {
+
+			if ( ! MediumEditor.util.isKey( event, MediumEditor.util.keyCode.ENTER ) ) {
+				return true;
+			}
+
+			var node = event.target;
+
+			if ( ! MediumEditor.util.isBlockContainer( node ) ) {
+				return true;
+			}
+
+			var documentFragment = document.createDocumentFragment();
+
+			// Add a new line
+			var newElement = document.createTextNode( '\n' );
+			documentFragment.appendChild( newElement );
+
+			// Add the br
+			newElement = document.createElement( 'br' );
+			documentFragment.appendChild( newElement );
+
+			var range = window.getSelection().getRangeAt( 0 );
+
+			if ( range.endContainer.length === range.endOffset ) {
+				newElement = document.createElement( 'br' );
+				documentFragment.appendChild( newElement );
+			}
+
+			// Make the br replace selection
+			range.deleteContents();
+			range.insertNode( documentFragment );
+
+			// Create a new range
+			range = document.createRange();
+			range.setStartAfter( newElement );
+			range.collapse( true );
+
+			// Set the cursor there
+			var selection = window.getSelection();
+			selection.removeAllRanges();
+			selection.addRange( range );
+
+			return false;
 
 		});
 

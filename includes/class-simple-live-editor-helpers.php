@@ -22,7 +22,7 @@ class Helpers {
         $count = 0;
 
         // sanitize for Win32 installs
-        $dir = str_replace('\\' ,'/', $dir);
+        $dir = str_replace( '\\' ,'/', $dir );
 
         // if file is in plugins folder
         $wp_plugin_dir = str_replace( '\\' ,'/', WP_PLUGIN_DIR );
