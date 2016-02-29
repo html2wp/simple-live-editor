@@ -15,7 +15,7 @@
  * @wordpress-plugin
  * Plugin Name:       Simple Live Editor
  * Plugin URI:        http://htmltowordpress.io/
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
+ * Description:       Edit your content live from the WordPress customize view - content management made fast and easy.
  * Version:           1.0.0
  * Author:            Harri Heljala
  * Author URI:        http://helja.la/
@@ -29,6 +29,14 @@
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
+
+/**
+ * Load and run the plugin update checker
+ */
+require_once plugin_dir_path( __FILE__ ) . 'vendor/yahnis-elsts/plugin-update-checker/plugin-update-checker.php';
+
+$sle_github_update_checker = PucFactory::getLatestClassVersion('PucGitHubChecker');
+$sle_update_checker = new $sle_github_update_checker( 'https://github.com/html2wp/simple-live-editor/', __FILE__, 'master' );
 
 /**
  * The code that runs during plugin activation.

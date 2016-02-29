@@ -23,9 +23,7 @@
 class Simple_Live_Editor_Deactivator {
 
 	/**
-	 * Short Description. (use period)
-	 *
-	 * Long Description.
+	 * Run all code necessary to be run during the plugin's activation
 	 *
 	 * @since    1.0.0
 	 */

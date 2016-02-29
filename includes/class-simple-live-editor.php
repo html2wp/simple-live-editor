@@ -74,6 +74,7 @@ class Simple_Live_Editor {
 		$this->load_dependencies();
 		$this->set_locale();
 		$this->define_admin_hooks();
+		$this->define_constants();
 
 	}
 
@@ -82,6 +83,7 @@ class Simple_Live_Editor {
 	 *
 	 * Include the following files that make up the plugin:
 	 *
+	 * - The Composer autoload includes
 	 * - Simple_Live_Editor_Loader. Orchestrates the hooks of the plugin.
 	 * - Simple_Live_Editor_i18n. Defines internationalization functionality.
 	 * - Simple_Live_Editor_Admin. Defines all hooks for the admin area.
@@ -169,6 +171,20 @@ class Simple_Live_Editor {
 		 * Ajax
 		 */
 		$this->loader->add_action( 'wp_ajax_sle_save_content', $plugin_admin, 'save_content' );
+
+	}
+
+	/**
+	 * Define contants used by the plugin
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function define_constants() {
+
+		define( 'SLE_PHRASING_CONTENT', 'a, abbr, map area, audio, b, bdi, bdo, br, button, canvas, cite, code, data, datalist, del, dfn, em, embed, i, iframe, img, input, ins, kbd, keygen, label, map, mark, math, meter, noscript, object, output, progress, q, ruby, s, samp, script, select, small, span, strong, sub, sup, svg, template, textarea, time, u, var, video, wbr, text' );
+
+		define( 'SLE_HEADING_CONTENT', 'h1, h2, h3, h4, h5, h6' );
 
 	}
 

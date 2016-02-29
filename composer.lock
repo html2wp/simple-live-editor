@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "445c6b93176ab6b4cffa6b8f82dae2d8",
-    "content-hash": "78c175411b9b5727274a47d89970061c",
+    "hash": "f88c83df415c3418413f0a91ac227589",
+    "content-hash": "27e8a7e360b10b2562a153a0b9b1c792",
     "packages": [
         {
             "name": "composer/installers",
@@ -181,6 +181,45 @@
             "description": "phpQuery is a server-side, chainable, CSS3 selector driven Document Object Model (DOM) API based on jQuery JavaScript Library",
             "homepage": "http://code.google.com/p/phpquery/",
             "time": "2016-02-25 16:23:32"
+        },
+        {
+            "name": "yahnis-elsts/plugin-update-checker",
+            "version": "v2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/YahnisElsts/plugin-update-checker.git",
+                "reference": "155eff79642bb9996eeb6ef33ac06db8d5629847"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/YahnisElsts/plugin-update-checker/zipball/155eff79642bb9996eeb6ef33ac06db8d5629847",
+                "reference": "155eff79642bb9996eeb6ef33ac06db8d5629847",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Yahnis Elsts",
+                    "email": "whiteshadow@w-shadow.com",
+                    "homepage": "http://w-shadow.com/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A custom update checker for WordPress plugins. Useful if you can't host your plugin in the official WP plugin repository but still want it to support automatic plugin updates.",
+            "homepage": "https://github.com/YahnisElsts/plugin-update-checker/",
+            "keywords": [
+                "automatic updates",
+                "plugin updates",
+                "wordpress"
+            ],
+            "time": "2015-07-28 10:43:46"
         }
     ],
     "packages-dev": [],
@@ -191,6 +230,8 @@
     },
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": ">=5.4.0"
+    },
     "platform-dev": []
 }

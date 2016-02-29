@@ -9,7 +9,7 @@
   "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "git@bitbucket.org:betwixt/simple-live-editor.git"
+    "url": "git@github.com:html2wp/simple-live-editor.git"
   },
   "keywords": [
     "wordpress",

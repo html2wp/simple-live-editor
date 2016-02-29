@@ -9,9 +9,11 @@
         }
     ],
     "require": {
-        "html2wp/phpquery": "dev-dev",
+        "php": ">=5.4.0",
         "composer/installers": "~1.0",
-        "ezyang/htmlpurifier": "*"
+        "html2wp/phpquery": "dev-dev",
+        "ezyang/htmlpurifier": "*",
+        "yahnis-elsts/plugin-update-checker": "*"
     },
     "license": "GPLv2",
     "authors": [

@@ -3,38 +3,50 @@
 
 	$(function() {
 
+		// An object holding the lists of edited contents
 		var content = {
 			texts: [],
 			images: []
 		};
 
+		var	file_frame,
+			target;
+
 		/**
 		 * Text editing
 		 */
 
+		// Load medium-editor
 		var editor = new MediumEditor( '.sle-editable-text:not(a)', {
 		    toolbar: {
 		        buttons: [ 'anchor' ]
 		    }
 		});
 
+		// On text change, prepare for saving
 		$( 'body' ).on( 'input blur keyup paste copy cut delete mouseup', '.sle-editable-text', function( e ) {
 
+			// Add the changed text to our content object
 			content.texts[ $( event.target ).data( 'sle-dom-index' ) ] = $( event.target ).html();
 
+			// Tell the customize view, we have unsaved content
 			parent.wp.customize.state( 'saved' ).set( false );
 
 		});
 
+		// Chrome inputs <div>s as line breaks, change these to <br>s
 		// See: http://stackoverflow.com/a/20398132/3073849
 		$( '.sle-editable-text' ).keypress( function( event ) {
 
+			// Make sure ENTER was pressed
 			if ( ! MediumEditor.util.isKey( event, MediumEditor.util.keyCode.ENTER ) ) {
 				return true;
 			}
 
 			var node = event.target;
 
+			// Make sure the element is not a block container
+			// In block containers we want to use the wrapper elements
 			if ( ! MediumEditor.util.isBlockContainer( node ) ) {
 				return true;
 			}
@@ -51,6 +63,7 @@
 
 			var range = window.getSelection().getRangeAt( 0 );
 
+			// Check if selection is on end of the line, as we will then need double <br>
 			if ( range.endContainer.length === range.endOffset ) {
 				newElement = document.createElement( 'br' );
 				documentFragment.appendChild( newElement );
@@ -77,18 +90,18 @@
 		/**
 		 * Image editing
 		 */
-		
-		var file_frame,
-			target;
 
+		 // Wrap the editable images to display the edit icon
 		$( '.sle-editable-image' ).each( function( index ) {
 			$( this )
 			.wrap( '<div class="sle-image-wrapper"></div>' )
 			.after( '<a href="javascript:;" class="sle-image-edit-icon sle-js-edit-image" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
 		});
 
+		// Position the edit icons to the center of the editable images
 		$( '.sle-image-edit-icon' ).each( function() {
 
+			// Get the image and icon dimensions
 			var $image = $( this ).siblings( '.sle-editable-image' ).first(),
 				imageHeight = $image.height(),
 				imageWidth = $image.width(),
@@ -103,17 +116,21 @@
 				var positionSide = 'Left';
 			}
 
+			// Calculate the position
 			var imageSideOffset = parseInt( $image.css( 'margin' + positionSide ) ) + parseInt( $image.css( 'padding' + positionSide ) ) + parseInt( $image.css( 'border' + positionSide ) );
 			css[ positionSide.toLowerCase() ] = imageSideOffset + imageWidth / 2 - iconWidth / 2;
 
+			// Set the position
 			$( this ).css( css );
 
 		});
 
+		// Launch the image selector when and image has been clicked
 		$( 'body' ).on( 'click', '.sle-js-edit-image, .sle-editable-image', function( event ) {
 
 		    event.preventDefault();
 
+		    // Choose the target based on where the user clicked
 		    if ( $( event.target ).is( '.sle-editable-image' ) ) {
 		    	target = event.target;
 		    } else {
@@ -128,7 +145,7 @@
 
 		    // Create the media frame.
 		    file_frame = parent.wp.media.frames.file_frame = parent.wp.media({
-		     	multiple: false  // Set to true to allow multiple files to be selected
+		     	multiple: false
 		    });
 
 		    // When an image is selected, run a callback.
@@ -157,14 +174,17 @@
 		 * Save data
 		 */
 		
+		// Bind to the customize view saved event
 		parent.wp.customize.bind( 'saved', function() {
 
+			// The data to save
 			var data = {
 				'action': 'sle_save_content',
 				'template': sleSettings.page_template,
 				'content': content,
 			};
 
+			// Post the data
 			$.post( sleSettings.ajax_url, data, function( response ) {
 				
 			});
