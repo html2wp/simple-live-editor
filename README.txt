@@ -12,9 +12,7 @@ Edit your content live from the WordPress customize view - content management ma
 
 == Description ==
 
-Edit your content live from the WordPress customize view - content management made fast and easy.
-
-Edit any text or images that are contained as HTML in your template files. Editing is done live from the WordPress customize view. Just go to the customize view and click on any text or images to edit them.
+Edit any text or images that are contained as HTML in your template files. Editing is done live from the WordPress customize view. Just go to the customize view and click on any text or images to edit them. Content management has never been this fast and easy.
 
 == Installation ==
 
