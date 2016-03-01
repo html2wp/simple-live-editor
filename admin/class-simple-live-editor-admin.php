@@ -202,7 +202,7 @@ class Simple_Live_Editor_Admin {
 			foreach ( array_filter( $_POST['content']['images'] ) as $index => $src ) {
 
 				$src = esc_url( stripslashes( $src ) );
-				$element = $this->dom->find( ".sle-editable-image[data-sle-dom-index=$index]" )->first();
+				$element = $this->dom->find( ".sle-editable-image[data-sle-dom-index=$index]" )[0];
 
 				// If we have a data-src attribute use that
 				if ( $element->is( '[data-src]' ) ) {
