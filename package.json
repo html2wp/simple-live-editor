@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "description": "Simple live editor for WordPress",
   "main": "simple-live-editor.php",
-  "dependencies": {
-    "medium-editor": "html2wp/medium-editor#dev"
-  },
-  "devDependencies": {},
+  "author": "Harri Heljala <harri@htmltowordpress.io>",
+  "license": "GPL-2.0+",
+  "homepage": "http://htmltowordpress.io",
   "repository": {
     "type": "git",
     "url": "git@github.com:html2wp/simple-live-editor.git"
@@ -20,6 +19,8 @@
     "content",
     "management"
   ],
-  "author": "Harri Heljala <harri@htmltowordpress.io>",
-  "license": "GPL-2.0+"
+  "dependencies": {
+    "medium-editor": "html2wp/medium-editor#dev"
+  },
+  "devDependencies": {}
 }
