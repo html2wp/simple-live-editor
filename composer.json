@@ -2,6 +2,20 @@
     "name": "html2wp/simple-live-editor",
     "description": "Simple live editor for WordPress",
     "type": "wordpress-plugin",
+    "license": "GPL-2.0+",
+    "homepage": "http://htmltowordpress.io/",
+    "authors": [
+        {
+            "name": "Harri Heljala",
+            "email": "harri@htmltowordpress.io",
+            "homepage": "http://helja.la",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "support@htmltowordpress.io",
+        "source": "https://github.com/html2wp/simple-live-editor"
+    },
     "repositories": [
         {
           "type": "git",
@@ -15,13 +29,6 @@
         "ezyang/htmlpurifier": "*",
         "yahnis-elsts/plugin-update-checker": "*"
     },
-    "license": "GPL-2.0+",
-    "authors": [
-        {
-            "name": "Harri Heljala",
-            "email": "harri@htmltowordpress.io"
-        }
-    ],
     "config": {
         "preferred-install": "dist"
     }
