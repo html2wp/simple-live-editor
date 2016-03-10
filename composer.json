@@ -3,7 +3,7 @@
     "description": "Simple live editor for WordPress",
     "type": "wordpress-plugin",
     "license": "GPL-2.0+",
-    "homepage": "http://htmltowordpress.io/",
+    "homepage": "http://htmltowordpress.io",
     "authors": [
         {
             "name": "Harri Heljala",
