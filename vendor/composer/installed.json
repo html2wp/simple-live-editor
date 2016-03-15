@@ -100,6 +100,41 @@
         ]
     },
     {
+        "name": "html2wp/phpquery",
+        "version": "dev-dev",
+        "version_normalized": "dev-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/html2wp/phpquery.git",
+            "reference": "95ffc6132f2502e5b67a517388c244441d84958c"
+        },
+        "time": "2016-03-15 21:47:57",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "classmap": [
+                "phpQuery/"
+            ]
+        },
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Tobiasz Cudnik",
+                "email": "tobiasz.cudnik@gmail.com",
+                "homepage": "https://github.com/TobiaszCudnik",
+                "role": "Developer"
+            },
+            {
+                "name": "didier Belot",
+                "role": "Packager"
+            }
+        ],
+        "description": "phpQuery is a server-side, chainable, CSS3 selector driven Document Object Model (DOM) API based on jQuery JavaScript Library",
+        "homepage": "http://code.google.com/p/phpquery/"
+    },
+    {
         "name": "ezyang/htmlpurifier",
         "version": "v4.7.0",
         "version_normalized": "4.7.0.0",
@@ -144,41 +179,6 @@
         "keywords": [
             "html"
         ]
-    },
-    {
-        "name": "html2wp/phpquery",
-        "version": "dev-dev",
-        "version_normalized": "dev-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/html2wp/phpquery.git",
-            "reference": "2aae646a9fb8c99444af85bc962bf67530153187"
-        },
-        "time": "2016-02-25 16:23:32",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "classmap": [
-                "phpQuery/"
-            ]
-        },
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Tobiasz Cudnik",
-                "email": "tobiasz.cudnik@gmail.com",
-                "homepage": "https://github.com/TobiaszCudnik",
-                "role": "Developer"
-            },
-            {
-                "name": "didier Belot",
-                "role": "Packager"
-            }
-        ],
-        "description": "phpQuery is a server-side, chainable, CSS3 selector driven Document Object Model (DOM) API based on jQuery JavaScript Library",
-        "homepage": "http://code.google.com/p/phpquery/"
     },
     {
         "name": "yahnis-elsts/plugin-update-checker",

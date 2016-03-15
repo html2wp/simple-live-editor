@@ -196,8 +196,8 @@ class DOMDocumentWrapper {
 			phpQuery::debug("Full markup load (HTML), documentCreate('$charset')");
 			$this->documentCreate($charset);
 			$return = phpQuery::$debug === 2
-				? $this->document->loadHTML( $markup, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD )
-				: @$this->document->loadHTML( $markup, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
+				? $this->document->loadHTML( $markup, 8192 | 4 )
+				: @$this->document->loadHTML( $markup, 8192 | 4 ); // LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
 			if ($return)
 				$this->root = $this->document;
 		}
