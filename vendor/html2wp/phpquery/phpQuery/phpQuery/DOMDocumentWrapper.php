@@ -196,8 +196,8 @@ class DOMDocumentWrapper {
 			phpQuery::debug("Full markup load (HTML), documentCreate('$charset')");
 			$this->documentCreate($charset);
 			$return = phpQuery::$debug === 2
-				? $this->document->loadHTML( $markup, 8192 | 4 )
-				: @$this->document->loadHTML( $markup, 8192 | 4 ); // LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
+				? $this->document->loadHTML( $markup, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD )
+				: @$this->document->loadHTML( $markup, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
 			if ($return)
 				$this->root = $this->document;
 		}
@@ -335,16 +335,16 @@ class DOMDocumentWrapper {
 	protected function contentTypeFromHTML($markup) {
 		$matches = array();
 		// find meta tag
-		preg_match('@<meta[^>]+http-equiv\\s*=\\s*(["|\'])Content-Type\\1([^>]+?)>@i',
+		preg_match('@<meta[^>]+http-equiv\s*=\s*["|\']Content-Type["|\'][^>]+>@',
 			$markup, $matches
 		);
 		if (! isset($matches[0]))
 			return array(null, null);
 		// get attr 'content'
-		preg_match('@content\\s*=\\s*(["|\'])(.+?)\\1@', $matches[0], $matches);
+		preg_match('@content\s*=\s*["|\'](.+?)["|\']@', $matches[0], $matches);
 		if (! isset($matches[0]))
 			return array(null, null);
-		return $this->contentTypeToArray($matches[2]);
+		return $this->contentTypeToArray($matches[1]);
 	}
 	protected function charsetFromHTML($markup) {
 		$contentType = $this->contentTypeFromHTML($markup);
@@ -367,7 +367,7 @@ class DOMDocumentWrapper {
 	 * @param $html
 	 */
 	protected function charsetFixHTML($markup) {
-		$matches = array();
+/*		$matches = array();
 		// find meta tag
 		preg_match('@\s*<meta[^>]+http-equiv\\s*=\\s*(["|\'])Content-Type\\1([^>]+?)>@i',
 			$markup, $matches, PREG_OFFSET_CAPTURE
@@ -379,12 +379,12 @@ class DOMDocumentWrapper {
 			.substr($markup, $matches[0][1]+strlen($metaContentType));
 		$headStart = stripos($markup, '<head>');
 		$markup = substr($markup, 0, $headStart+6).$metaContentType
-			.substr($markup, $headStart+6);
+			.substr($markup, $headStart+6);*/
 		return $markup;
 	}
 	protected function charsetAppendToHTML($html, $charset, $xhtml = false) {
 		// remove existing meta[type=content-type]
-		$html = preg_replace('@\s*<meta[^>]+http-equiv\\s*=\\s*(["|\'])Content-Type\\1([^>]+?)>@i', '', $html);
+		$html = preg_replace('@<meta[^>]+http-equiv\s*=\s*["|\']Content-Type["|\'][^>]+>@i', '', $html);
 		$meta = '<meta http-equiv="Content-Type" content="text/html;charset='
 			.$charset.'" '
 			.($xhtml ? '/' : '')
