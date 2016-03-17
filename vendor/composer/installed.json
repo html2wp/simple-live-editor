@@ -193,9 +193,9 @@
         "source": {
             "type": "git",
             "url": "https://github.com/html2wp/phpquery.git",
-            "reference": "916ef41280d00ea7ef312ea133e2cb3cd2cf7207"
+            "reference": "61f7b3d92d9f460b0d18533d5131e419fc31986e"
         },
-        "time": "2016-03-16 23:15:33",
+        "time": "2016-03-17 10:30:43",
         "type": "library",
         "installation-source": "source",
         "autoload": {

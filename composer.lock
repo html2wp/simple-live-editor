@@ -155,7 +155,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/html2wp/phpquery.git",
-                "reference": "916ef41280d00ea7ef312ea133e2cb3cd2cf7207"
+                "reference": "61f7b3d92d9f460b0d18533d5131e419fc31986e"
             },
             "type": "library",
             "autoload": {
@@ -180,7 +180,7 @@
             ],
             "description": "phpQuery is a server-side, chainable, CSS3 selector driven Document Object Model (DOM) API based on jQuery JavaScript Library",
             "homepage": "http://code.google.com/p/phpquery/",
-            "time": "2016-03-16 23:15:33"
+            "time": "2016-03-17 10:30:43"
         },
         {
             "name": "yahnis-elsts/plugin-update-checker",
