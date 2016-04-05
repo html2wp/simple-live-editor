@@ -258,8 +258,9 @@ class Simple_Live_Editor {
     function admin_notice_for_sle_editor() {
     	$message = esc_html__( 'Want to edit text and images? Use Live Editing in the Customize view.', 'simple-live-editor' );
     	$cta = esc_html__( 'Launch Customizer', 'simple-live-editor' );
+    	$cta_url = '/wp-admin/customize.php';
         
-        echo '<div class="notice notice-info sle-notice-bg"><p>' . $message . '<a class="btn">' . $cta . '</a></p></div>';
+        echo '<div class="notice notice-info sle-notice-bg"><p>' . $message . '<a href="' . $cta_url . '" class="btn">' . $cta . '&rarr;</a></p></div>';
     }	
 
 	/**
