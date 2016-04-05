@@ -75,6 +75,9 @@ class Simple_Live_Editor {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_constants();
+		$this->define_wp_mce_editor_hooks();
+
+		//phpinfo();
 
 	}
 
@@ -175,6 +178,25 @@ class Simple_Live_Editor {
 	}
 
 	/**
+	 * Define hooks required for showing the notifications
+	 * in the MCE Editor on Posts and Pages screen in order
+	 * to let users know that they should use the Customise view
+	 * instead in order to edit the content very easily using the Simple Live Editor plugin
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function define_wp_mce_editor_hooks() {
+
+		global $pagenow;
+		if ( $pagenow == 'post.php' ) :
+			add_action( 'admin_print_styles', array(&$this, 'admin_notice_sle_styles') );
+			add_action( 'admin_notices', array(&$this, 'admin_notice_for_sle_editor') );
+		endif;
+
+	}	
+
+	/**
 	 * Define contants used by the plugin
 	 *
 	 * @since    1.0.0
@@ -228,4 +250,24 @@ class Simple_Live_Editor {
 		return $this->version;
 	}
 
+	/**
+	 * Prints notices to let the user know about the avilability of the Simple Live Editor plugin
+	 *
+	 * @since    1.0.0
+	 */
+    function admin_notice_for_sle_editor() {
+    	$message = esc_html__( 'Want to edit text and images? Use Live Editing in the Customize view.', 'simple-live-editor' );
+    	$cta = esc_html__( 'Launch Customizer', 'simple-live-editor' );
+        
+        echo '<div class="notice notice-info sle-notice-bg"><p>' . $message . '<a class="btn">' . $cta . '</a></p></div>';
+    }	
+
+	/**
+	 * Adds the necessary styles for the Simple Live Editor plugin notice
+	 *
+	 * @since    1.0.0
+	 */
+    function admin_notice_sle_styles() {
+		wp_enqueue_style( 'simple-live-editor-notify', plugin_dir_url( __FILE__ ) . "../admin/css/simple-live-editor-notify.css" );
+    }
 }
