@@ -188,8 +188,21 @@ class Simple_Live_Editor {
 	 */
 	private function define_wp_mce_editor_hooks() {
 
-		global $pagenow;
-		if ( $pagenow == 'post.php' ) :
+		global $pagenow, $typenow;
+		if (empty($typenow)) {
+            // try to pick it up from the query string
+            if (!empty($_GET['post_type'])) {
+                $typenow = strtolower($_GET['post_type']);
+            }
+            // try to pick it up from the post id
+            elseif (!empty($_GET['post'])) {
+                $post = get_post($_GET['post']);
+                $typenow = $post->post_type;
+            }
+        }	
+
+        //show the SLE notification only for add new page and edit existing page
+		if ( ('post.php' == $pagenow || 'post-new.php' == $pagenow) && 'page' == $typenow ) :
 			add_action( 'admin_print_styles', array(&$this, 'admin_notice_sle_styles') );
 			add_action( 'admin_notices', array(&$this, 'admin_notice_for_sle_editor') );
 		endif;
