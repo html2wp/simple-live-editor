@@ -260,7 +260,7 @@ class Simple_Live_Editor {
     	$cta = esc_html__( 'Launch Customizer', 'simple-live-editor' );
     	$cta_url = '/wp-admin/customize.php';
         
-        echo '<div class="notice notice-info sle-notice-bg"><p>' . $message . '<a href="' . $cta_url . '" class="btn">' . $cta . '&rarr;</a></p></div>';
+        echo '<div class="notice notice-info sle-notice-bg"><p><span class="dashicons dashicons-edit sle-notice-edit"></span>' . $message . '<a href="' . $cta_url . '" class="btn">' . $cta . '&rarr;</a></p></div>';
     }	
 
 	/**
