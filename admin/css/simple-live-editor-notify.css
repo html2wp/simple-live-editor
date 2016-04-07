@@ -33,4 +33,21 @@
     border-right: 1px solid #797474;
     border-bottom: 1px solid #797474;
     border-left: 1px solid #CCCCCC;
+    transition: all 0.3s ease 0s;
+    -moz-transition: all 0.3s ease 0s;
+    -webkit-transition: all 0.3s ease 0s;
+}
+
+@media only screen and (max-width: 1075px) {
+    .sle-notice-bg a {
+        display: block;
+        margin-top: 12px;
+        margin-left: 32px;
+        max-width: 165px;
+    }
+    
+    .sle-notice-bg a:hover {
+        display: block;
+        max-width: 170px;
+    }    
 }
