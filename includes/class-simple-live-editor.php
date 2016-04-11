@@ -58,6 +58,15 @@ class Simple_Live_Editor {
 	protected $version;
 
 	/**
+	 * The admin instance.
+	 *
+	 * @since    1.0.1
+	 * @access   protected
+	 * @var      Simple_Live_Editor_Admin    $plugin_admin    The admin instance.
+	 */
+	protected $plugin_admin;
+
+	/**
 	 * Define the core functionality of the plugin.
 	 *
 	 * Set the plugin name and the plugin version that can be used throughout the plugin.
@@ -74,10 +83,8 @@ class Simple_Live_Editor {
 		$this->load_dependencies();
 		$this->set_locale();
 		$this->define_admin_hooks();
+		$this->define_editor_hooks();
 		$this->define_constants();
-		$this->define_wp_mce_editor_hooks();
-
-		//phpinfo();
 
 	}
 
@@ -159,54 +166,54 @@ class Simple_Live_Editor {
 		/**
 		 * Init
 		 */
-		$plugin_admin = new Simple_Live_Editor_Admin( $this->get_plugin_name(), $this->get_version() );
+		$this->plugin_admin = new Simple_Live_Editor_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		/**
 		 * Customize view
 		 * These hooks are actually in the public scope for them to work in the customize view
 		 * The customize view check needs to be done in the callback
 		 */
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		$this->loader->add_action( 'template_include', $plugin_admin, 'prepare_template_for_editing' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $this->plugin_admin, 'enqueue_styles' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $this->plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'template_include', $this->plugin_admin, 'prepare_template_for_editing' );
 
 		/**
 		 * Ajax
 		 */
-		$this->loader->add_action( 'wp_ajax_sle_save_content', $plugin_admin, 'save_content' );
+		$this->loader->add_action( 'wp_ajax_sle_save_content', $this->plugin_admin, 'save_content' );
 
 	}
 
 	/**
-	 * Define hooks required for showing the notifications
-	 * in the MCE Editor on Posts and Pages screen in order
-	 * to let users know that they should use the Customise view
-	 * instead in order to edit the content very easily using the Simple Live Editor plugin
+	 * Define hooks required for showing the notifications in the wp-admin Page editing screen
+	 * to let users know that they should use the Customize view instead
+	 * in order to edit the content very easily using the Simple Live Editor plugin
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.1
 	 * @access   private
 	 */
-	private function define_wp_mce_editor_hooks() {
+	private function define_editor_hooks() {
 
 		global $pagenow, $typenow;
-		if (empty($typenow)) {
-            // try to pick it up from the query string
-            if (!empty($_GET['post_type'])) {
-                $typenow = strtolower($_GET['post_type']);
-            }
-            // try to pick it up from the post id
-            elseif (!empty($_GET['post'])) {
-                $post = get_post($_GET['post']);
-                $typenow = $post->post_type;
-            }
-        }	
 
-        //show the SLE notification only for add new page and edit existing page
-		if ( ('post.php' == $pagenow || 'post-new.php' == $pagenow) && 'page' == $typenow ) :
-			add_action( 'admin_print_styles', array(&$this, 'admin_notice_sle_styles') );
-			add_action( 'admin_notices', array(&$this, 'admin_notice_for_sle_editor') );
-		endif;
+		if ( empty( $typenow ) ) {
 
+			// Try to pick the current screen from the query string
+			if ( ! empty( $_GET['post_type'] ) ) {
+				$typenow = strtolower( $_GET['post_type'] );
+			}
+			// try to the current screen from the post id
+			elseif ( ! empty( $_GET['post'] ) ) {
+				$post = get_post( $_GET['post'] );
+				$typenow = $post->post_type;
+			}
+		}	
+
+		// Show the SLE notification only for add new page and edit existing page
+		if ( ( $pagenow === 'post.php' || $pagenow === 'post-new.php') && $typenow === 'page' ) {
+			add_action( 'admin_enqueue_scripts', array( $this->plugin_admin, 'enqueue_sle_notice_styles' ) );
+			add_action( 'admin_notices', array( $this->plugin_admin, 'show_sle_notice' ) );
+		}
 	}	
 
 	/**
@@ -262,26 +269,4 @@ class Simple_Live_Editor {
 	public function get_version() {
 		return $this->version;
 	}
-
-	/**
-	 * Prints notices to let the user know about the avilability of the Simple Live Editor plugin
-	 *
-	 * @since    1.0.0
-	 */
-    function admin_notice_for_sle_editor() {
-    	$message = esc_html__( 'Want to edit text and images? Use Live Editing in the Customize view.', 'simple-live-editor' );
-    	$cta = esc_html__( 'Launch Customizer', 'simple-live-editor' );
-    	$cta_url = '/wp-admin/customize.php';
-        
-        echo '<div class="notice notice-info sle-notice-bg"><p><span class="dashicons dashicons-edit sle-notice-edit"></span>' . $message . '<a href="' . $cta_url . '" class="btn">' . $cta . '&rarr;</a></p></div>';
-    }	
-
-	/**
-	 * Adds the necessary styles for the Simple Live Editor plugin notice
-	 *
-	 * @since    1.0.0
-	 */
-    function admin_notice_sle_styles() {
-		wp_enqueue_style( 'simple-live-editor-notify', plugin_dir_url( __FILE__ ) . "../admin/css/simple-live-editor-notify.css" );
-    }
 }
