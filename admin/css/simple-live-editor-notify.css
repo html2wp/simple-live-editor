@@ -34,6 +34,10 @@
 	transition: all 0.3s ease 0s;
 }
 
+.sle-notice a:hover {
+    max-width: 170px;
+}
+
 @media only screen and (max-width: 1075px) {
 	.sle-notice a {
 		display: block;
