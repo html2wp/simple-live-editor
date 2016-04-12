@@ -211,8 +211,8 @@ class Simple_Live_Editor {
 
 		// Show the SLE notification only for add new page and edit existing page
 		if ( ( $pagenow === 'post.php' || $pagenow === 'post-new.php') && $typenow === 'page' ) {
-			add_action( 'admin_enqueue_scripts', array( $this->plugin_admin, 'enqueue_sle_notice_styles' ) );
-			add_action( 'admin_notices', array( $this->plugin_admin, 'show_sle_notice' ) );
+			$this->loader->add_action( 'admin_enqueue_scripts', $this->plugin_admin, 'enqueue_sle_notice_styles' );
+			$this->loader->add_action( 'admin_notices', $this->plugin_admin, 'show_sle_notice' );
 		}
 	}	
 
