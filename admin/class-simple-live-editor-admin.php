@@ -154,8 +154,8 @@ class Simple_Live_Editor_Admin {
 
 		if ( isset( $_GET['post'] ) ) {
 			$post = get_post( $_GET['post'] );
-			if (!empty($post) && isset($post->ID)) {
-				$cta_url = admin_url( 'customize.php?url=' . rawurlencode( get_permalink($post->ID) ) );
+			if ( ! empty( $post ) && isset( $post->ID ) ) {
+				$cta_url = admin_url( 'customize.php?url=' . rawurlencode( get_permalink( $post->ID ) ) );
 			}
 		}
 		
