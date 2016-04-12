@@ -1,0 +1,53 @@
+.sle-notice {
+	background-color: #2FBA9D;
+}
+
+.notice.notice-info.sle-notice {
+	border-left: 0;
+}
+
+.sle-notice-edit {
+	font-size: 28px;
+	margin-right: 13px;
+}
+
+.sle-notice p {
+	color: white;
+	font-size: 18px;
+	padding: 8px;
+}
+
+.sle-notice a {
+	display: inline;
+	padding: 10px 25px;
+	border-radius: 6px;
+	background-color: #FF9B00;
+	cursor: pointer;
+	margin-left: 16px;
+	font-size: 16px;
+	text-decoration: none;
+	color: white;
+	border-top: 1px solid #CCCCCC;
+	border-right: 1px solid #797474;
+	border-bottom: 1px solid #797474;
+	border-left: 1px solid #CCCCCC;
+	transition: all 0.3s ease 0s;
+}
+
+.sle-notice a:hover {
+    max-width: 170px;
+}
+
+@media only screen and (max-width: 1075px) {
+	.sle-notice a {
+		display: block;
+		margin-top: 12px;
+		margin-left: 32px;
+		max-width: 165px;
+	}
+
+	.sle-notice a:hover {
+		display: block;
+		max-width: 170px;
+	}
+}
