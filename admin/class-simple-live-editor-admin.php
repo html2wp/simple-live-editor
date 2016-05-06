@@ -134,6 +134,35 @@ class Simple_Live_Editor_Admin {
 	}
 
 	/**
+	 * Adds the necessary styles for the page editing view notice
+	 *
+	 * @since    1.0.1
+	 */
+	public function enqueue_sle_notice_styles() {
+		wp_enqueue_style( $this->plugin_name . '-notify', Helpers::get_dir_url( __FILE__ ) . 'css/simple-live-editor-notify.css' );
+	}
+
+	/**
+	 * Prints notice in page editing view to let the user know about the availability of the plugin and editin capability
+	 *
+	 * @since    1.0.1
+	 */
+	public function show_sle_notice() {
+		$message = esc_html__( 'Want to edit text and images? Use Live Editing in the Customize view.', $this->plugin_name );
+		$cta = esc_html__( 'Launch Customizer', $this->plugin_name );
+		$cta_url = admin_url( 'customize.php' );
+
+		if ( isset( $_GET['post'] ) ) {
+			$post = get_post( $_GET['post'] );
+			if ( ! empty( $post ) && isset( $post->ID ) ) {
+				$cta_url = admin_url( 'customize.php?url=' . rawurlencode( get_permalink( $post->ID ) ) );
+			}
+		}
+		
+		echo '<div class="notice notice-info sle-notice"><p><span class="dashicons dashicons-edit sle-notice-edit"></span>' . $message . '<a href="' . $cta_url . '" class="btn">' . $cta . '&rarr;</a></p></div>';
+	}
+
+	/**
 	 * Override the template output in the customize view
 	 *
 	 * @since    1.0.0

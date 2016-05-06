@@ -58,6 +58,15 @@ class Simple_Live_Editor {
 	protected $version;
 
 	/**
+	 * The admin instance.
+	 *
+	 * @since    1.0.1
+	 * @access   protected
+	 * @var      Simple_Live_Editor_Admin    $plugin_admin    The admin instance.
+	 */
+	protected $plugin_admin;
+
+	/**
 	 * Define the core functionality of the plugin.
 	 *
 	 * Set the plugin name and the plugin version that can be used throughout the plugin.
@@ -74,6 +83,7 @@ class Simple_Live_Editor {
 		$this->load_dependencies();
 		$this->set_locale();
 		$this->define_admin_hooks();
+		$this->define_editor_hooks();
 		$this->define_constants();
 
 	}
@@ -156,23 +166,55 @@ class Simple_Live_Editor {
 		/**
 		 * Init
 		 */
-		$plugin_admin = new Simple_Live_Editor_Admin( $this->get_plugin_name(), $this->get_version() );
+		$this->plugin_admin = new Simple_Live_Editor_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		/**
 		 * Customize view
 		 * These hooks are actually in the public scope for them to work in the customize view
 		 * The customize view check needs to be done in the callback
 		 */
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		$this->loader->add_action( 'template_include', $plugin_admin, 'prepare_template_for_editing' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $this->plugin_admin, 'enqueue_styles' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $this->plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'template_include', $this->plugin_admin, 'prepare_template_for_editing' );
 
 		/**
 		 * Ajax
 		 */
-		$this->loader->add_action( 'wp_ajax_sle_save_content', $plugin_admin, 'save_content' );
+		$this->loader->add_action( 'wp_ajax_sle_save_content', $this->plugin_admin, 'save_content' );
 
 	}
+
+	/**
+	 * Define hooks required for showing the notifications in the wp-admin Page editing screen
+	 * to let users know that they should use the Customize view instead
+	 * in order to edit the content very easily using the Simple Live Editor plugin
+	 *
+	 * @since    1.0.1
+	 * @access   private
+	 */
+	private function define_editor_hooks() {
+
+		global $pagenow, $typenow;
+
+		if ( empty( $typenow ) ) {
+
+			// Try to pick the current screen from the query string
+			if ( ! empty( $_GET['post_type'] ) ) {
+				$typenow = strtolower( $_GET['post_type'] );
+			}
+			// try to the current screen from the post id
+			elseif ( ! empty( $_GET['post'] ) ) {
+				$post = get_post( $_GET['post'] );
+				$typenow = $post->post_type;
+			}
+		}	
+
+		// Show the SLE notification only for add new page and edit existing page
+		if ( ( $pagenow === 'post.php' || $pagenow === 'post-new.php') && $typenow === 'page' ) {
+			$this->loader->add_action( 'admin_enqueue_scripts', $this->plugin_admin, 'enqueue_sle_notice_styles' );
+			$this->loader->add_action( 'admin_notices', $this->plugin_admin, 'show_sle_notice' );
+		}
+	}	
 
 	/**
 	 * Define contants used by the plugin
@@ -227,5 +269,4 @@ class Simple_Live_Editor {
 	public function get_version() {
 		return $this->version;
 	}
-
 }
