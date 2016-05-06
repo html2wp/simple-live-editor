@@ -1,10 +1,10 @@
 === Simple Live Editor ===
-Contributors: harzzn
+Contributors: harzzn, dkd903
 Donate link: http://htmltowordpress.io/
 Tags: simple, live, edit, content, management
 Requires at least: 4.4.2
 Tested up to: 4.4.2
-Stable tag: 1.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,6 +28,10 @@ Edit any text or images that are contained as HTML in your template files. Editi
 Go to the customize view and click on any text or image to edit them.
 
 == Changelog ==
+
+= 1.0.1 =
+* Support for php version 5.3 and not dependent on libxml anymore
+* Added notification about editing capabilities in page editing view
 
 = 1.0 =
 * First release with text and image editing
