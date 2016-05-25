@@ -126,8 +126,13 @@ class Simple_Live_Editor_Admin {
 			// Medium-editor
 			wp_enqueue_script( 'medium-editor', Helpers::get_dir_url( __FILE__ ) . '../node_modules/medium-editor/dist/js/medium-editor.js' );
 
+			// Thicbox
+			add_thickbox();
+
+			wp_enqueue_script( 'editor' );
+
 			// The plugin javascript
-			wp_enqueue_script( $this->plugin_name, Helpers::get_dir_url( __FILE__ ) . 'js/simple-live-editor-admin.js', array( 'jquery', 'medium-editor' ), $this->version, false );
+			wp_enqueue_script( $this->plugin_name, Helpers::get_dir_url( __FILE__ ) . 'js/simple-live-editor-admin.js', array( 'jquery', 'thickbox', 'medium-editor', 'editor' ), $this->version, false );
 			wp_localize_script( $this->plugin_name, 'sleSettings', array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'page_template' => get_page_template() ) );
 		}
 
@@ -305,9 +310,14 @@ class Simple_Live_Editor_Admin {
 		}
 
 		/**
-		 * Find all images mark them as editable elements
+		 * Find all images and mark them as editable elements
 		 */
 		$this->dom->find( 'img' )->addClass( 'sle-editable-image' );
+
+		/**
+		 * Find all links and mark them as editable elements
+		 */
+		$this->dom->find( 'a' )->addClass( 'sle-editable-link' );
 
 
 		/**

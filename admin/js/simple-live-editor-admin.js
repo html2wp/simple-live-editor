@@ -16,15 +16,8 @@
 		 * Text editing
 		 */
 
-		// Load medium-editor
-		var editor = new MediumEditor( '.sle-editable-text:not(a)', {
-		    toolbar: {
-		        buttons: [ 'anchor' ]
-		    }
-		});
-
 		// On text change, prepare for saving
-		$( 'body' ).on( 'input blur keyup paste copy cut delete mouseup', '.sle-editable-text', function( e ) {
+/*		$( 'body' ).on( 'input blur keyup paste copy cut delete mouseup', '.sle-editable-text', function( e ) {
 
 			// Add the changed text to our content object
 			content.texts[ $( event.target ).data( 'sle-dom-index' ) ] = $( event.target ).html();
@@ -32,58 +25,36 @@
 			// Tell the customize view, we have unsaved content
 			parent.wp.customize.state( 'saved' ).set( false );
 
+		});*/
+
+		$( '*' ).on( 'mouseover', function(e) {
+
+			/*if ( $( this ).children( '.sle-editable-text' ).length > 0 ) {
+				$( this ).addClass( 'sle-editable-text-highlight' );
+			}*/
+			if ( $( this ).css('background-image') !== 'none') {
+				console.log( 'Edit background image?' );
+			}
 		});
 
-		// Chrome inputs <div>s as line breaks, change these to <br>s
-		// See: http://stackoverflow.com/a/20398132/3073849
-		$( '.sle-editable-text' ).keypress( function( event ) {
+		$( 'a' ).on( 'click', function(e) {
 
-			// Make sure ENTER was pressed
-			if ( ! MediumEditor.util.isKey( event, MediumEditor.util.keyCode.ENTER ) ) {
-				return true;
-			}
+			e.preventDefault();
+			e.stopPropagation();
 
-			var node = event.target;
+			console.log( 'Edit link or go to link?' );
 
-			// Make sure the element is not a block container
-			// In block containers we want to use the wrapper elements
-			if ( ! MediumEditor.util.isBlockContainer( node ) ) {
-				return true;
-			}
+		});
 
-			var documentFragment = document.createDocumentFragment();
+		$( '.sle-editable-text' ).on( 'click', function(e) {
 
-			// Add a new line
-			var newElement = document.createTextNode( '\n' );
-			documentFragment.appendChild( newElement );
+			e.preventDefault();
+			e.stopPropagation();
 
-			// Add the br
-			newElement = document.createElement( 'br' );
-			documentFragment.appendChild( newElement );
-
-			var range = window.getSelection().getRangeAt( 0 );
-
-			// Check if selection is on end of the line, as we will then need double <br>
-			if ( range.endContainer.length === range.endOffset ) {
-				newElement = document.createElement( 'br' );
-				documentFragment.appendChild( newElement );
-			}
-
-			// Make the br replace selection
-			range.deleteContents();
-			range.insertNode( documentFragment );
-
-			// Create a new range
-			range = document.createRange();
-			range.setStartAfter( newElement );
-			range.collapse( true );
-
-			// Set the cursor there
-			var selection = window.getSelection();
-			selection.removeAllRanges();
-			selection.addRange( range );
-
-			return false;
+			tinyMCE.remove();
+			tb_show( 'Edit Content', '#TB_inline?width=600&height=550&inlineId=modal-window-id' );
+			tinyMCE.init({ selector:'textarea' });
+			tinyMCE.get( 'lol' ).setContent( $( this ).html() );
 
 		});
 
