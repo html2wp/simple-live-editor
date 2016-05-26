@@ -27,17 +27,18 @@
 
 		});*/
 
-		$( '*' ).on( 'mouseover', function(e) {
+		$( 'body' ).on( 'mouseover', '*', function(e) {
 
 			/*if ( $( this ).children( '.sle-editable-text' ).length > 0 ) {
 				$( this ).addClass( 'sle-editable-text-highlight' );
 			}*/
-			if ( $( this ).css('background-image') !== 'none') {
+
+			if ( $( this ).css( 'background-image' ) !== 'none' ) {
 				console.log( 'Edit background image?' );
 			}
 		});
 
-		$( 'a' ).on( 'click', function(e) {
+		$( 'body' ).on( 'click', '.sle-editable-link', function(e) {
 
 			e.preventDefault();
 			e.stopPropagation();
@@ -46,16 +47,28 @@
 
 		});
 
-		$( '.sle-editable-text' ).on( 'click', function(e) {
+		$( 'body' ).on( 'click', '.sle-editable-text', function(e) {
+
+			console.log( 'Edit text?' );
 
 			e.preventDefault();
 			e.stopPropagation();
 
-			tinyMCE.remove();
-			tb_show( 'Edit Content', '#TB_inline?width=600&height=550&inlineId=modal-window-id' );
-			tinyMCE.init({ selector:'textarea' });
-			tinyMCE.get( 'lol' ).setContent( $( this ).html() );
+			var element = $( this ),
+				settings = window.tinyMCEPreInit.mceInit['sle-editor'];
 
+			settings.setup = function( editor ) {
+				editor.on('change input blur keyup paste copy cut delete mouseup', function(e) {
+		            $( element ).html( editor.getContent() );
+		        });
+			};
+
+			settings.forced_root_block = false;
+
+			tinyMCE.remove();
+			tb_show( 'Edit Content', '#TB_inline?width=600&height=550&inlineId=sle-editor-modal' );
+			tinyMCE.init( settings );
+			tinyMCE.get( 'sle-editor' ).setContent( $( element ).html() );
 		});
 
 		/**
@@ -66,11 +79,11 @@
 		$( '.sle-editable-image' ).each( function( index ) {
 			$( this )
 			.wrap( '<div class="sle-image-wrapper"></div>' )
-			.after( '<a href="javascript:;" class="sle-image-edit-icon sle-js-edit-image" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
+			.after( '<a href="javascript:;" class="sle-image-edit-icon sle-edit-image" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
 		});
 
 		// Position the edit icons to the center of the editable images
-		$( '.sle-image-edit-icon' ).each( function() {
+/*		$( '.sle-image-edit-icon' ).each( function() {
 
 			// Get the image and icon dimensions
 			var $image = $( this ).siblings( '.sle-editable-image' ).first(),
@@ -94,12 +107,13 @@
 			// Set the position
 			$( this ).css( css );
 
-		});
+		});*/
 
 		// Launch the image selector when and image has been clicked
-		$( 'body' ).on( 'click', '.sle-js-edit-image, .sle-editable-image', function( event ) {
+		$( 'body' ).on( 'click', '.sle-edit-image, .sle-editable-image', function( event ) {
 
-		    event.preventDefault();
+			e.preventDefault();
+			e.stopPropagation();
 
 		    // Choose the target based on where the user clicked
 		    if ( $( event.target ).is( '.sle-editable-image' ) ) {

@@ -1,5 +1,9 @@
+.sle-editor-modal {
+    display: none;
+}
+
 .sle-editable-text:hover {
-    background: red !important;
+    outline: solid 1px #4C99E8 !important;
     cursor: text !important;
 }
 
@@ -15,6 +19,8 @@
 
 .sle-image-wrapper .sle-image-edit-icon {
 	position: absolute;
+    left: 0;
+    top: 0;
 	display: none;
     height: 31px;
     width: 31px;

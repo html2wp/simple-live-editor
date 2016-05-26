@@ -167,6 +167,18 @@ class Simple_Live_Editor_Admin {
 		echo '<div class="notice notice-info sle-notice"><p><span class="dashicons dashicons-edit sle-notice-edit"></span>' . $message . '<a href="' . $cta_url . '" class="btn">' . $cta . '&rarr;</a></p></div>';
 	}
 
+	public function add_editor() {
+
+		$settings = array(
+			'wpautop'       => false,
+			'media_buttons' => false,
+		);
+
+		echo '<div id="sle-editor-modal" class="sle-editor-modal">';
+		wp_editor( '', 'sle-editor', $settings );
+		echo '</div>';
+	}
+
 	/**
 	 * Override the template output in the customize view
 	 *
@@ -284,12 +296,13 @@ class Simple_Live_Editor_Admin {
 			if ( $element->nodeType === XML_TEXT_NODE && preg_match( '/\S/', $element->nodeValue ) ) {
 
 				// If the parent is not 'Phrasing content or headings or paragraph' and the acutal element has siblings, wrap the element with div
-				if ( count( pq( $element )->parent()->not( SLE_PHRASING_CONTENT )->not( SLE_HEADING_CONTENT )->not( 'p' ) ) > 0 && count( pq( $element )->siblings() ) > 0 ) {
+				/*if ( count( pq( $element )->parent()->not( SLE_PHRASING_CONTENT )->not( SLE_HEADING_CONTENT )->not( 'p' ) ) > 0 && count( pq( $element )->siblings() ) > 0 ) {
 					pq( $element )->wrap( '<div class="sle-wrapper-element"></div>' );
-				}
+				}*/
 
 				// Mark as editable
-				pq( $element )->parent()->addClass( 'sle-editable-text' );
+				// TODO: check that parent not root
+				pq( $element )->parent()->parent()->addClass( 'sle-editable-text' );
 			}
 
 		}
@@ -297,7 +310,7 @@ class Simple_Live_Editor_Admin {
 		/**
 		 * Wrap p tags for better editing functionality
 		 */
-		foreach ( $this->dom->find( 'p.sle-editable-text' ) as $key => $element ) {
+/*		foreach ( $this->dom->find( 'p.sle-editable-text' ) as $key => $element ) {
 
 			// Don't do anything if parent already an editable field
 			if ( count( pq( $element )->parents( '.sle-editable-text' ) ) > 0 ) {
@@ -307,18 +320,35 @@ class Simple_Live_Editor_Admin {
 			// Do the wrapping
 			pq( $element )->nextAll( 'p.sle-editable-text' )->andSelf()->removeClass( 'sle-editable-text' )->wrapAll( '<div class="sle-wrapper-element sle-editable-text"></div>' );
 
-		}
+		}*/
 
 		/**
 		 * Find all images and mark them as editable elements
 		 */
-		$this->dom->find( 'img' )->addClass( 'sle-editable-image' );
+		foreach ( $this->dom->find( 'img' ) as $key => $element ) {
+
+			// Don't do anything if parent already an editable field
+			if ( count( pq( $element )->parents( '.sle-editable-text' ) ) > 0 ) {
+				continue;
+			}
+
+			pq( $element )->addClass( 'sle-editable-image' );
+
+		}
 
 		/**
 		 * Find all links and mark them as editable elements
 		 */
-		$this->dom->find( 'a' )->addClass( 'sle-editable-link' );
+		foreach ( $this->dom->find( 'a:not(.sle-editable-text)' ) as $key => $element ) {
 
+			// Don't do anything if parent already an editable field
+			if ( count( pq( $element )->parents( '.sle-editable-text' ) ) > 0 ) {
+				continue;
+			}
+
+			pq( $element )->addClass( 'sle-editable-link' );
+
+		}
 
 		/**
 		 * Create our indexing for all HTML elements
