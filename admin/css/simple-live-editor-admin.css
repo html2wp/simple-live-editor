@@ -1,4 +1,4 @@
-.sle-editor-modal {
+.sle-modal {
     display: none;
 }
 
@@ -49,6 +49,13 @@
 
 .sle-image-edit-icon:before {
     content: "\f464";
+    font: 400 20px/1 dashicons;
+    position: relative;
+    top: 2px;
+}
+
+.sle-link-edit-icon:before {
+    content: "\f103";
     font: 400 20px/1 dashicons;
     position: relative;
     top: 2px;

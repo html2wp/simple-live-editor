@@ -167,16 +167,20 @@ class Simple_Live_Editor_Admin {
 		echo '<div class="notice notice-info sle-notice"><p><span class="dashicons dashicons-edit sle-notice-edit"></span>' . $message . '<a href="' . $cta_url . '" class="btn">' . $cta . '&rarr;</a></p></div>';
 	}
 
-	public function add_editor() {
+	public function add_editor_modal() {
 
 		$settings = array(
 			'wpautop'       => false,
 			'media_buttons' => false,
 		);
 
-		echo '<div id="sle-editor-modal" class="sle-editor-modal">';
+		echo '<div id="sle-editor-modal" class="sle-modal">';
 		wp_editor( '', 'sle-editor', $settings );
 		echo '</div>';
+	}
+
+	public function add_link_edit_modal() {
+		echo '<div id="sle-link-modal" class="sle-modal"><input type="text" class="sle-link-editor"></div>';
 	}
 
 	/**

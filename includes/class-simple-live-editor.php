@@ -182,7 +182,8 @@ class Simple_Live_Editor {
 		 */
 		$this->loader->add_action( 'wp_ajax_sle_save_content', $this->plugin_admin, 'save_content' );
 
-		$this->loader->add_action( 'wp_footer', $this->plugin_admin, 'add_editor' );
+		$this->loader->add_action( 'wp_footer', $this->plugin_admin, 'add_editor_modal' );
+		$this->loader->add_action( 'wp_footer', $this->plugin_admin, 'add_link_edit_modal' );
 
 	}
 

@@ -17,30 +17,34 @@
 		 */
 		$( 'body' ).on( 'mouseover', '*', function(e) {
 
-			/*if ( $( this ).children( '.sle-editable-text' ).length > 0 ) {
-				$( this ).addClass( 'sle-editable-text-highlight' );
-			}*/
-
 			if ( $( this ).css( 'background-image' ) !== 'none' ) {
 				console.log( 'Edit background image?' );
 			}
 		});
 
-		$( 'body' ).on( 'click', '.sle-editable-link', function(e) {
+		$( 'body' ).on( 'click', '.sle-edit-link', function(e) {
 
 			e.preventDefault();
 			e.stopPropagation();
 
-			console.log( 'Edit link or go to link?' );
+			if ( this !== e.target ) {
+				return false;
+			}
 
+			target = $( '.sle-editable-link[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
+
+			$( '.sle-link-editor' ).val( $( target ).attr( 'href' ) );
+			tb_show( 'Edit Link', '#TB_inline?width=600&height=550&inlineId=sle-link-modal' );
 		});
 
 		$( 'body' ).on( 'click', '.sle-editable-text', function(e) {
 
-			console.log( 'Edit text?' );
-
 			e.preventDefault();
 			e.stopPropagation();
+
+			if ( this !== e.target ) {
+				return false;
+			}
 
 			var element = this,
 				settings = window.tinyMCEPreInit.mceInit['sle-editor'];
@@ -78,6 +82,11 @@
 			.after( '<a href="javascript:;" class="sle-image-edit-icon sle-edit-image" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
 		});
 
+		$( '.sle-editable-link' ).each( function( index ) {
+			$( this )
+			.after( '<a href="javascript:;" class="sle-link-edit-icon sle-edit-link" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
+		});
+
 		// Position the edit icons to the center of the editable images
 /*		$( '.sle-image-edit-icon' ).each( function() {
 
@@ -106,7 +115,7 @@
 		});*/
 
 		// Launch the image selector when and image has been clicked
-		$( 'body' ).on( 'click', '.sle-edit-image, .sle-editable-image', function( event ) {
+		$( 'body' ).on( 'click', '.sle-edit-image', function( event ) {
 
 			e.preventDefault();
 			e.stopPropagation();
