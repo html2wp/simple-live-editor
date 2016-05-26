@@ -236,7 +236,6 @@ class Simple_Live_Editor_Admin {
 			foreach ( array_filter( $_POST['content']['texts'] ) as $index => $html ) {
 				$this->dom->find( ".sle-editable-text[data-sle-dom-index=$index]" )->html( $this->purifier->purify( stripslashes( $html ) ) );
 			}
-
 		}
 
 		/**
@@ -256,9 +255,7 @@ class Simple_Live_Editor_Admin {
 				} else {
 					pq( $element )->attr( 'src', $src );
 				}
-
 			}
-
 		}
 
 		// Save document
@@ -369,9 +366,9 @@ class Simple_Live_Editor_Admin {
 		/**
 		 * Get rid of wrappers
 		 */
-		foreach ( $this->dom->find( '.sle-wrapper-element' ) as $key => $element ) {
+		/*foreach ( $this->dom->find( '.sle-wrapper-element' ) as $key => $element ) {
 			pq( $element )->replaceWith( pq( $element )->php() );
-		}
+		}*/
 
 		/**
 		 * Remove tmp attributes and classes

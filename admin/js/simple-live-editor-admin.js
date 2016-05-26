@@ -15,18 +15,6 @@
 		/**
 		 * Text editing
 		 */
-
-		// On text change, prepare for saving
-/*		$( 'body' ).on( 'input blur keyup paste copy cut delete mouseup', '.sle-editable-text', function( e ) {
-
-			// Add the changed text to our content object
-			content.texts[ $( event.target ).data( 'sle-dom-index' ) ] = $( event.target ).html();
-
-			// Tell the customize view, we have unsaved content
-			parent.wp.customize.state( 'saved' ).set( false );
-
-		});*/
-
 		$( 'body' ).on( 'mouseover', '*', function(e) {
 
 			/*if ( $( this ).children( '.sle-editable-text' ).length > 0 ) {
@@ -54,13 +42,21 @@
 			e.preventDefault();
 			e.stopPropagation();
 
-			var element = $( this ),
+			var element = this,
 				settings = window.tinyMCEPreInit.mceInit['sle-editor'];
 
 			settings.setup = function( editor ) {
 				editor.on('change input blur keyup paste copy cut delete mouseup', function(e) {
-		            $( element ).html( editor.getContent() );
-		        });
+
+					// Update the element
+					$( element ).html( editor.getContent() );
+
+					// Add the changed text to our content object
+					content.texts[ $( element ).data( 'sle-dom-index' ) ] = editor.getContent();
+
+					// Tell the customize view, we have unsaved content
+					parent.wp.customize.state( 'saved' ).set( false );
+				});
 			};
 
 			settings.forced_root_block = false;
@@ -115,43 +111,43 @@
 			e.preventDefault();
 			e.stopPropagation();
 
-		    // Choose the target based on where the user clicked
-		    if ( $( event.target ).is( '.sle-editable-image' ) ) {
-		    	target = event.target;
-		    } else {
-		    	target = $( '.sle-editable-image[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
-		    }
+			// Choose the target based on where the user clicked
+			if ( $( event.target ).is( '.sle-editable-image' ) ) {
+				target = event.target;
+			} else {
+				target = $( '.sle-editable-image[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
+			}
 
-		    // If the media frame already exists, reopen it.
-		    if ( file_frame ) {
-		    	file_frame.open();
-		    	return;
-		    }
+			// If the media frame already exists, reopen it.
+			if ( file_frame ) {
+				file_frame.open();
+				return;
+			}
 
-		    // Create the media frame.
-		    file_frame = parent.wp.media.frames.file_frame = parent.wp.media({
-		     	multiple: false
-		    });
+			// Create the media frame.
+			file_frame = parent.wp.media.frames.file_frame = parent.wp.media({
+				multiple: false
+			});
 
-		    // When an image is selected, run a callback.
-		    file_frame.on( 'select', function() {
+			// When an image is selected, run a callback.
+			file_frame.on( 'select', function() {
 
-		    	// We set multiple to false so only get one image from the uploader
-		    	var attachment = file_frame.state().get( 'selection' ).first().toJSON();
+				// We set multiple to false so only get one image from the uploader
+				var attachment = file_frame.state().get( 'selection' ).first().toJSON();
 
-		    	// Change the image src
-		    	$( target ).attr( 'src', attachment.url );
+				// Change the image src
+				$( target ).attr( 'src', attachment.url );
 
-		    	// Add to list of changes
-		    	content.images[ $( target ).data( 'sle-dom-index' ) ] = attachment.url;
+				// Add to list of changes
+				content.images[ $( target ).data( 'sle-dom-index' ) ] = attachment.url;
 
-		    	// Trigger unsaved state
-		    	parent.wp.customize.state( 'saved' ).set( false );
+				// Trigger unsaved state
+				parent.wp.customize.state( 'saved' ).set( false );
 
-		    });
+			});
 
-		    // Finally, open the modal
-		    file_frame.open();
+			// Finally, open the modal
+			file_frame.open();
 
 		 });
 
