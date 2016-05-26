@@ -15,21 +15,10 @@
 		/**
 		 * Text editing
 		 */
-		$( 'body' ).on( 'mouseover', '*', function(e) {
+		$( 'body' ).on( 'click', '.sle-edit-link', function( event ) {
 
-			if ( $( this ).css( 'background-image' ) !== 'none' ) {
-				console.log( 'Edit background image?' );
-			}
-		});
-
-		$( 'body' ).on( 'click', '.sle-edit-link', function(e) {
-
-			e.preventDefault();
-			e.stopPropagation();
-
-			if ( this !== e.target ) {
-				return false;
-			}
+			event.preventDefault();
+			event.stopPropagation();
 
 			target = $( '.sle-editable-link[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
 
@@ -37,12 +26,12 @@
 			tb_show( 'Edit Link', '#TB_inline?width=600&height=550&inlineId=sle-link-modal' );
 		});
 
-		$( 'body' ).on( 'click', '.sle-editable-text', function(e) {
+		$( 'body' ).on( 'click', '.sle-editable-text', function( event ) {
 
-			e.preventDefault();
-			e.stopPropagation();
+			event.preventDefault();
+			event.stopPropagation();
 
-			if ( this !== e.target ) {
+			if ( $( e.target ).is( 'a' ) ) {
 				return false;
 			}
 
@@ -50,7 +39,7 @@
 				settings = window.tinyMCEPreInit.mceInit['sle-editor'];
 
 			settings.setup = function( editor ) {
-				editor.on('change input blur keyup paste copy cut delete mouseup', function(e) {
+				editor.on('change input blur keyup paste copy cut delete mouseup', function()  {
 
 					// Update the element
 					$( element ).html( editor.getContent() );
@@ -81,10 +70,18 @@
 			.wrap( '<div class="sle-image-wrapper"></div>' )
 			.after( '<a href="javascript:;" class="sle-image-edit-icon sle-edit-image" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
 		});
-
+/*
 		$( '.sle-editable-link' ).each( function( index ) {
 			$( this )
 			.after( '<a href="javascript:;" class="sle-link-edit-icon sle-edit-link" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
+		});*/
+
+		$( '[data-sle-dom-index]' ).each( function( index ) {
+
+			if ( $( this ).css( 'background-image' ) !== 'none' ) {
+				$( this )
+				.after( '<a href="javascript:;" class="sle-image-edit-icon sle-edit-image" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
+			}
 		});
 
 		// Position the edit icons to the center of the editable images
@@ -117,15 +114,10 @@
 		// Launch the image selector when and image has been clicked
 		$( 'body' ).on( 'click', '.sle-edit-image', function( event ) {
 
-			e.preventDefault();
-			e.stopPropagation();
+			event.preventDefault();
+			event.stopPropagation();
 
-			// Choose the target based on where the user clicked
-			if ( $( event.target ).is( '.sle-editable-image' ) ) {
-				target = event.target;
-			} else {
-				target = $( '.sle-editable-image[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
-			}
+			target = $( '.sle-editable-image[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
 
 			// If the media frame already exists, reopen it.
 			if ( file_frame ) {

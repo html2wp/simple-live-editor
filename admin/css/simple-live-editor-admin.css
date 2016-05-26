@@ -2,6 +2,11 @@
     display: none;
 }
 
+.thickbox-loading,
+.TB_overlayBG {
+    z-index: 999999999 !important;
+}
+
 .sle-editable-text:hover {
     outline: solid 1px #4C99E8 !important;
     cursor: text !important;
