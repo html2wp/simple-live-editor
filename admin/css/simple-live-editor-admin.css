@@ -1,67 +1,66 @@
+/**
+ * Don't display the sle-modal on load
+ */
 .sle-modal {
-    display: none;
+	display: none;
 }
 
+/**
+ * Place the thicbox modal on top
+ */
 .thickbox-loading,
 .TB_overlayBG {
-    z-index: 999999999 !important;
+	z-index: 999999999 !important;
 }
 
-.sle-editable-text:hover {
-    outline: solid 1px #4C99E8 !important;
-    cursor: text !important;
+/**
+ * Hover for editable elements
+ */
+[class^="sle-editable-"]:hover,
+[class*=" sle-editable-"]:hover,
+[class^="sle-editable-"].sle-hover,
+[class*=" sle-editable-"].sle-hover {
+	outline: solid 1px #4C99E8 !important;
 }
 
-.sle-image-wrapper {
-	position: relative;
-    clear: both;
-}
-
-.sle-image-wrapper:hover .sle-editable-image {
-	opacity: 0.5;
-    cursor: pointer;
-}
-
-.sle-image-wrapper .sle-image-edit-icon {
-	position: absolute;
-    left: 0;
-    top: 0;
+/**
+ * Editing icons
+ */
+.sle-edit-icon {
 	display: none;
-    height: 31px;
-    width: 31px;
-    border: transparent solid 1px;
-    border-radius: 100%;
-    font-size: 21px;
-    line-height: 31px;
-    text-align: center;
-    text-decoration: none;
-    vertical-align: top;
-    overflow: hidden;
-    transition: none;
-    border-color: transparent;
-    background: #23282D;
-    color: #eee;
-    z-index: 9999;
+	position: absolute;
+	height: 31px;
+	width: 31px;
+	border: transparent solid 1px;
+	border-radius: 100%;
+	font-size: 21px;
+	line-height: 31px;
+	text-align: center;
+	text-decoration: none;
+	vertical-align: top;
+	overflow: hidden;
+	transition: none;
+	border-color: transparent;
+	background: #23282D;
+	color: #eee;
+	z-index: 999999999;
 }
 
-.sle-image-wrapper:hover .sle-image-edit-icon {
-    display: inline-block;
-}
-
-.sle-image-wrapper:hover .sle-image-edit-icon:hover {
+.sle-edit-icon:hover {
 	color: #00b9eb;
+	display: block;
 }
 
-.sle-image-edit-icon:before {
-    content: "\f464";
-    font: 400 20px/1 dashicons;
-    position: relative;
-    top: 2px;
+.sle-edit-icon--pen:before {
+	content: "\f464";
+	font: 400 20px/1 dashicons;
+	position: relative;
+	top: 2px;
 }
 
-.sle-link-edit-icon:before {
-    content: "\f103";
-    font: 400 20px/1 dashicons;
-    position: relative;
-    top: 2px;
+.sle-edit-icon--link:before {
+	content: "\f103";
+	font: 400 20px/1 dashicons;
+	position: relative;
+	top: 2px;
 }

@@ -169,6 +169,10 @@ class Simple_Live_Editor_Admin {
 
 	public function add_editor_modal() {
 
+		/**
+		 * TODO: check we in the customizer
+		 */
+
 		$settings = array(
 			'wpautop'       => false,
 			'media_buttons' => false,

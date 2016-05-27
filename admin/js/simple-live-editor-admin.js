@@ -15,37 +15,19 @@
 		/**
 		 * Text editing
 		 */
-		$( 'body' ).on( 'click', '.sle-edit-link', function( event ) {
+		$( 'body' ).on( 'click', '.sle-edit-text', function( event ) {
 
-			event.preventDefault();
-			event.stopPropagation();
-
-			target = $( '.sle-editable-link[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
-
-			$( '.sle-link-editor' ).val( $( target ).attr( 'href' ) );
-			tb_show( 'Edit Link', '#TB_inline?width=600&height=550&inlineId=sle-link-modal' );
-		});
-
-		$( 'body' ).on( 'click', '.sle-editable-text', function( event ) {
-
-			event.preventDefault();
-			event.stopPropagation();
-
-			if ( $( e.target ).is( 'a' ) ) {
-				return false;
-			}
-
-			var element = this,
+			var $target = $( '.sle-editable-text[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' ),
 				settings = window.tinyMCEPreInit.mceInit['sle-editor'];
 
 			settings.setup = function( editor ) {
 				editor.on('change input blur keyup paste copy cut delete mouseup', function()  {
 
 					// Update the element
-					$( element ).html( editor.getContent() );
+					$target.html( editor.getContent() );
 
 					// Add the changed text to our content object
-					content.texts[ $( element ).data( 'sle-dom-index' ) ] = editor.getContent();
+					content.texts[ $target.data( 'sle-dom-index' ) ] = editor.getContent();
 
 					// Tell the customize view, we have unsaved content
 					parent.wp.customize.state( 'saved' ).set( false );
@@ -57,65 +39,25 @@
 			tinyMCE.remove();
 			tb_show( 'Edit Content', '#TB_inline?width=600&height=550&inlineId=sle-editor-modal' );
 			tinyMCE.init( settings );
-			tinyMCE.get( 'sle-editor' ).setContent( $( element ).html() );
+			tinyMCE.get( 'sle-editor' ).setContent( $target.html() );
+		});
+
+		/**
+		 * Link editing
+		 */
+		$( 'body' ).on( 'click', '.sle-edit-link', function( event ) {
+
+			target = $( '.sle-editable-link[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
+
+			$( '.sle-link-editor' ).val( $( target ).attr( 'href' ) );
+			tb_show( 'Edit Link', '#TB_inline?width=600&height=550&inlineId=sle-link-modal' );
 		});
 
 		/**
 		 * Image editing
+		 * Launch the image selector when and image has been clicked
 		 */
-
-		 // Wrap the editable images to display the edit icon
-		$( '.sle-editable-image' ).each( function( index ) {
-			$( this )
-			.wrap( '<div class="sle-image-wrapper"></div>' )
-			.after( '<a href="javascript:;" class="sle-image-edit-icon sle-edit-image" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
-		});
-/*
-		$( '.sle-editable-link' ).each( function( index ) {
-			$( this )
-			.after( '<a href="javascript:;" class="sle-link-edit-icon sle-edit-link" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
-		});*/
-
-		$( '[data-sle-dom-index]' ).each( function( index ) {
-
-			if ( $( this ).css( 'background-image' ) !== 'none' ) {
-				$( this )
-				.after( '<a href="javascript:;" class="sle-image-edit-icon sle-edit-image" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
-			}
-		});
-
-		// Position the edit icons to the center of the editable images
-/*		$( '.sle-image-edit-icon' ).each( function() {
-
-			// Get the image and icon dimensions
-			var $image = $( this ).siblings( '.sle-editable-image' ).first(),
-				imageHeight = $image.height(),
-				imageWidth = $image.width(),
-				imageTopOffset = parseInt( $image.css( 'marginTop' ) ) + parseInt( $image.css( 'paddingTop' ) ) + parseInt( $image.css( 'borderTop' ) ),
-				iconHeight = $( this ).outerHeight( true ),
-				iconWidth = $( this ).outerWidth( true ),
-				css = { top: imageTopOffset + imageHeight / 2 - iconHeight / 2 };
-
-			if ( $image.css('float') === 'right' ) {
-				var positionSide = 'Right';
-			} else {
-				var positionSide = 'Left';
-			}
-
-			// Calculate the position
-			var imageSideOffset = parseInt( $image.css( 'margin' + positionSide ) ) + parseInt( $image.css( 'padding' + positionSide ) ) + parseInt( $image.css( 'border' + positionSide ) );
-			css[ positionSide.toLowerCase() ] = imageSideOffset + imageWidth / 2 - iconWidth / 2;
-
-			// Set the position
-			$( this ).css( css );
-
-		});*/
-
-		// Launch the image selector when and image has been clicked
 		$( 'body' ).on( 'click', '.sle-edit-image', function( event ) {
-
-			event.preventDefault();
-			event.stopPropagation();
 
 			target = $( '.sle-editable-image[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
 
@@ -151,6 +93,83 @@
 			file_frame.open();
 
 		 });
+
+		/**
+		 * The editing icons
+		 */
+
+		 // Wrap the editable images to display the edit icon
+		$( '.sle-editable-image' ).each( function( index ) {
+			$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--pen sle-edit-image" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
+		});
+
+		$( '.sle-editable-text' ).each( function( index ) {
+			$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--pen sle-edit-text" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
+		});
+
+		$( '.sle-editable-link' ).each( function( index ) {
+			$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--link sle-edit-icon--right sle-edit-link" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
+		});
+
+		$( '[data-sle-dom-index]' ).each( function( index ) {
+
+			if ( $( this ).css( 'background-image' ) !== 'none' ) {
+				$( this ).addClass( 'sle-editable-bg-image' );
+				$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--pen sle-edit-bg-image" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
+			}
+		});
+
+		/**
+		 * Position the edit icons
+		 */
+		$( '.sle-edit-icon' ).each( function() {
+
+			// Get the target element and icon dimensions
+			var $target = $( '[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' ),
+				targetOffset = $target.offset(),
+				css = { top: targetOffset.top };
+
+			if ( $( this ).hasClass( 'sle-edit-icon--right' ) ) {
+				var targetWidth = $target.width(),
+					iconWidth = $( this ).outerWidth( true );
+
+				css.left = targetOffset.left +  ( targetWidth - iconWidth );
+			} else {
+				css.left = targetOffset.left;
+			}
+
+			// Set the position
+			$( this ).css( css );
+
+		});
+
+		/**
+		 * Hover effects for the edit icons
+		 */
+		
+		$( '[class^="sle-editable-"], [class*=" sle-editable-"]' ).on( 'mouseover', function( event ) {
+			$( '.sle-edit-icon[data-sle-target=' + $( this ).data( 'sle-dom-index' ) + ']' ).show();
+		});
+
+		$( '[class^="sle-editable-"], [class*=" sle-editable-"]' ).on( 'mouseout', function( event ) {
+			console.log( event.relatedTarget );
+			if ( ! $( event.relatedTarget ).is( '.sle-edit-icon[data-sle-target=' + $( this ).data( 'sle-dom-index' ) + ']' ) ) {
+				$( '.sle-edit-icon[data-sle-target=' + $( this ).data( 'sle-dom-index' ) + ']' ).hide();
+			}
+		});
+
+		$( '.sle-edit-icon' ).on( 'mouseover', function( event ) {
+			$( '[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' ).addClass( 'sle-hover' );
+		});
+
+		$( '.sle-edit-icon' ).on( 'mouseout', function( event ) {
+
+			$( '[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' ).removeClass( 'sle-hover' );
+
+			if ( ! $( event.relatedTarget ).is( '[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' ) ) {
+				$( this ).hide();
+			}
+		});
 
 		/**
 		 * Save data
