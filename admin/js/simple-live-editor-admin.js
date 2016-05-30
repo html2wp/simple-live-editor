@@ -97,9 +97,7 @@
 
 			open_file_frame( function( url ) {
 
-				console.log('lol');
-
-				// TODO: replace the first url found with the new url
+				// Replace the first url found with the new url
 				var backgroundImage = $target.css( 'background-image' ).replace( /url\((.*?)\)/i, 'url(' + url + ')' );
 
 				// Change the image src
