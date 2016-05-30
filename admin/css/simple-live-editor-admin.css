@@ -23,6 +23,10 @@
 	outline: solid 1px #4C99E8 !important;
 }
 
+.sle-editable-text:hover {
+	cursor: default;
+}
+
 /**
  * Editing icons
  */

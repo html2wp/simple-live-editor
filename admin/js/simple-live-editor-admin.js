@@ -11,8 +11,6 @@
 			links: []
 		};
 
-		var	file_frame;
-
 		/**
 		 * Text editing
 		 */
@@ -99,14 +97,16 @@
 
 			open_file_frame( function( url ) {
 
+				console.log('lol');
+
 				// TODO: replace the first url found with the new url
-				var backgroundImage = 'url("' + url + '")';
+				var backgroundImage = $target.css( 'background-image' ).replace( /url\((.*?)\)/i, 'url(' + url + ')' );
 
 				// Change the image src
 				$target.css( 'background-image', backgroundImage );
 
 				// Add to list of changes
-				content.bgImages[ $target.data( 'sle-dom-index' ) ] = backgroundImage;
+				content.bgImages[ $target.data( 'sle-dom-index' ) ] = $target.attr( 'style' );
 
 				// Trigger unsaved state
 				parent.wp.customize.state( 'saved' ).set( false );
@@ -120,14 +120,8 @@
 		 */
 		function open_file_frame( callback ) {
 
-			// If the media frame already exists, reopen it.
-			if ( file_frame ) {
-				file_frame.open();
-				return;
-			}
-
 			// Create the media frame.
-			file_frame = parent.wp.media.frames.file_frame = parent.wp.media({
+			var	file_frame = parent.wp.media.frames.file_frame = parent.wp.media({
 				multiple: false
 			});
 
@@ -214,13 +208,8 @@
 		$( '[class^="sle-editable-"], [class*=" sle-editable-"]' ).on( 'mouseout', function( event ) {
 			var $target = $( '.sle-edit-icon[data-sle-target=' + $( this ).data( 'sle-dom-index' ) + ']' );
 
-			if ( ! $( event.relatedTarget ).is( '.sle-edit-icon[data-sle-target=' + $( this ).data( 'sle-dom-index' ) + ']' )
-					&& ! isContainedByElement( event.relatedTarget, this ) ) {
+			if ( ! $( event.relatedTarget ).is( '.sle-edit-icon[data-sle-target=' + $( this ).data( 'sle-dom-index' ) + ']' ) ) {
 				$target.hide();
-			} else {
-				$( event.relatedTarget ).on( 'mouseout', function( event ) {
-					$target.hide();
-				});
 			}
 		});
 
@@ -246,6 +235,10 @@
 				containerWidth = $( container ).outerWidth( true ),
 				containerHeight = $( container ).outerHeight( true );
 
+			if ( ! elementOffset || ! containerOffset ) {
+				return false;
+			}
+
 			if ( elementOffset.left >= containerOffset.left
 					&& elementOffset.top >= containerOffset.top
 					&& elementOffset.left + elementWidth <=  containerOffset.left + containerWidth
@@ -266,9 +259,14 @@
 			// The data to save
 			var data = {
 				'action': 'sle_save_content',
-				'template': sleSettings.page_template,
+				'page_template': sleSettings.page_template,
+				'page_id': sleSettings.page_id,
 				'content': content,
 			};
+
+			if ( sleSettings.language_code ) {
+				data.language_code = sleSettings.language_code;
+			}
 
 			// Post the data
 			$.post( sleSettings.ajax_url, data, function( response ) {

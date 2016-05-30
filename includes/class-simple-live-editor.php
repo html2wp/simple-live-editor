@@ -175,7 +175,7 @@ class Simple_Live_Editor {
 		 */
 		$this->loader->add_action( 'wp_enqueue_scripts', $this->plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $this->plugin_admin, 'enqueue_scripts' );
-		$this->loader->add_action( 'template_include', $this->plugin_admin, 'prepare_template_for_editing' );
+		$this->loader->add_action( 'template_include', $this->plugin_admin, 'serve_template' );
 
 		/**
 		 * Ajax

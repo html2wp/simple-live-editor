@@ -133,7 +133,24 @@ class Simple_Live_Editor_Admin {
 
 			// The plugin javascript
 			wp_enqueue_script( $this->plugin_name, Helpers::get_dir_url( __FILE__ ) . 'js/simple-live-editor-admin.js', array( 'jquery', 'thickbox', 'medium-editor', 'editor' ), $this->version, false );
-			wp_localize_script( $this->plugin_name, 'sleSettings', array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'page_template' => get_page_template() ) );
+
+			/**
+			 * Pass settings to javascript
+			 */
+
+			global $post;
+
+			$sle_settings = array(
+				'ajax_url'      => admin_url( 'admin-ajax.php' ),
+				'page_template' => get_page_template(),
+				'page_id'       => $post->ID,
+			);
+
+			if ( defined( 'ICL_LANGUAGE_CODE' ) ) {
+				$sle_settings['language_code'] = ICL_LANGUAGE_CODE;
+			}
+
+			wp_localize_script( $this->plugin_name, 'sleSettings', $sle_settings );
 		}
 
 	}
@@ -170,29 +187,25 @@ class Simple_Live_Editor_Admin {
 	public function add_editor_modal() {
 
 		/**
-		 * TODO: check we in the customizer
+		 * The function gets loaded in the public scope,
+		 * so we'll need to check that we are acutally in the customize view
 		 */
+		global $wp_customize;
 
-		$settings = array(
-			'wpautop'       => false,
-			'media_buttons' => false,
-		);
+		if ( isset( $wp_customize ) ) {
 
-		echo '<div id="sle-editor-modal" class="sle-modal">';
-		wp_editor( '', 'sle-editor', $settings );
-		echo '</div>';
+			$settings = array(
+				'wpautop'       => false,
+				'media_buttons' => false,
+			);
+
+			echo '<div id="sle-editor-modal" class="sle-modal">';
+			wp_editor( '', 'sle-editor', $settings );
+			echo '</div>';
+		}
 	}
 
 	public function add_link_edit_modal() {
-		echo '<div id="sle-link-modal" class="sle-modal"><input type="text" class="sle-link-editor"></div>';
-	}
-
-	/**
-	 * Override the template output in the customize view
-	 *
-	 * @since    1.0.0
-	 */
-	public function prepare_template_for_editing( $template ) {
 
 		/**
 		 * The function gets loaded in the public scope,
@@ -200,9 +213,42 @@ class Simple_Live_Editor_Admin {
 		 */
 		global $wp_customize;
 
-		if ( !isset( $wp_customize ) ) {
-			return $template;
+		if ( isset( $wp_customize ) ) {
+			echo '<div id="sle-link-modal" class="sle-modal"><input type="text" class="sle-link-editor"></div>';
 		}
+	}
+
+	/**
+	 * Override the template output
+	 *
+	 * @since    1.0.0
+	 */
+	public function serve_template( $template ) {
+
+		// Get the currently relevant template
+		$current_template = $this->get_current_template( $template );
+
+		/**
+		 * The function gets loaded in the public scope,
+		 * so we'll need to check if we should serve the edited template
+		 * or prepare the template for editing in the customizer view
+		 */
+		global $wp_customize;
+
+		// Outside of customizer get the current template
+		if ( ! isset( $wp_customize ) ) {
+			return $current_template;
+		}
+
+		// In customizer prepare the template for editing
+		$this->prepare_template_for_editing( $template );
+
+		// No need to return a template name anymore
+		return;
+
+	}
+
+	public function prepare_template_for_editing( $template ) {
 
 		// Get the document
 		$this->get_document( $template );
@@ -214,10 +260,47 @@ class Simple_Live_Editor_Admin {
 		eval( '?>' . $this->dom->php() );
 		$this_string = ob_get_contents();
 		ob_end_flush();
+	}
 
-		// No need to return a template name anymore
-		return;
+	public function get_current_template( $template ) {
 
+		// Get the start and end part of the path
+		$path_prefix = get_template_directory() . '/simple-live-editor';
+		$path_suffix = Helpers::replace_first_occurrence( $template, get_template_directory(), '' );
+		
+		// If wpml language defined
+		if ( defined( 'ICL_LANGUAGE_CODE' ) ) {
+			$path_language_part = '/' . ICL_LANGUAGE_CODE;
+		} else {
+			$path_language_part = '';
+		}
+
+		global $post;
+
+		// Check that the page exists
+		// And append page ID
+		if ( is_object( $post ) && $post->post_type === 'page' ) {
+			$path_id_part = '/page-' . $post->ID;
+		} else {
+			$path_id_part = '';
+		}
+
+		// The possible paths to templates
+		$path_options = array(
+			$path_prefix . $path_language_part . $path_id_part . $path_suffix,
+			$path_prefix . $path_language_part . $path_suffix,
+			$path_prefix . $path_id_part . $path_suffix,
+			$path_prefix . $path_suffix,
+			$template
+		);
+
+		// Decide which template exists and serve it
+		foreach ( $path_options as $path ) {
+			if ( file_exists( $path ) ) {
+				error_log( $path );
+				return $path;
+			}
+		}
 	}
 
 	/**
@@ -228,12 +311,12 @@ class Simple_Live_Editor_Admin {
 	public function save_content() {
 
 		// Check that we have the necessary fields
-		if ( !isset( $_POST['template'] ) || !isset( $_POST['content'] ) ) {
+		if ( !isset( $_POST['page_template'] ) || !isset( $_POST['page_id'] ) || !isset( $_POST['content'] ) ) {
 			wp_die();
 		}
 
 		// Get the document
-		$this->get_document( $_POST['template'] );
+		$this->get_document( $_POST['page_template'] );
 
 		/**
 		 * Save the text content
@@ -243,6 +326,17 @@ class Simple_Live_Editor_Admin {
 			// Loop through the JSON of edited texts and change the value to document
 			foreach ( array_filter( $_POST['content']['texts'] ) as $index => $html ) {
 				$this->dom->find( ".sle-editable-text[data-sle-dom-index=$index]" )->html( $this->purifier->purify( stripslashes( $html ) ) );
+			}
+		}
+
+		/**
+		 * Save the links
+		 */
+		if ( isset( $_POST['content']['links'] ) ) {
+
+			// Loop through the JSON of edited link and change the value to document
+			foreach ( array_filter( $_POST['content']['links'] ) as $index => $href ) {
+				$this->dom->find( ".sle-editable-link[data-sle-dom-index=$index]" )->attr( 'href', esc_url( stripslashes( $href ) ) );
 			}
 		}
 
@@ -266,8 +360,23 @@ class Simple_Live_Editor_Admin {
 			}
 		}
 
+		/**
+		 * Save the background images
+		 */
+		if ( isset( $_POST['content']['bgImages'] ) ) {
+
+			// Loop through the JSON of edited background iamges and change the value to document
+			foreach ( array_filter( $_POST['content']['bgImages'] ) as $index => $background_image ) {
+				$this->dom->find( "[data-sle-dom-index=$index]" )->attr( 'style', $this->purifier->purify( stripslashes( $background_image ) ) );
+			}
+		}
+
 		// Save document
-		$this->save_document( $_POST['template'] );
+		if ( isset( $_POST['language_code'] ) ) {
+			$this->save_document( $_POST['page_template'], $_POST['page_id'], $_POST['language_code'] );
+		} else {
+			$this->save_document( $_POST['page_template'], $_POST['page_id'] );
+		}
 
 		wp_die();
 
@@ -280,7 +389,7 @@ class Simple_Live_Editor_Admin {
 	 */
 	private function get_document( $template ) {
 
-		$this->dom = phpQuery::newDocumentFilePHP( $template );
+		$this->dom = phpQuery::newDocumentFilePHP( $this->get_current_template( $template ) );
 
 		/**
 		 * Find all text nodes and mark their parents as editable elements
@@ -311,21 +420,6 @@ class Simple_Live_Editor_Admin {
 			}
 
 		}
-
-		/**
-		 * Wrap p tags for better editing functionality
-		 */
-/*		foreach ( $this->dom->find( 'p.sle-editable-text' ) as $key => $element ) {
-
-			// Don't do anything if parent already an editable field
-			if ( count( pq( $element )->parents( '.sle-editable-text' ) ) > 0 ) {
-				continue;
-			}
-
-			// Do the wrapping
-			pq( $element )->nextAll( 'p.sle-editable-text' )->andSelf()->removeClass( 'sle-editable-text' )->wrapAll( '<div class="sle-wrapper-element sle-editable-text"></div>' );
-
-		}*/
 
 		/**
 		 * Find all images and mark them as editable elements
@@ -369,24 +463,48 @@ class Simple_Live_Editor_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	private function save_document( $template ) {
-
-		/**
-		 * Get rid of wrappers
-		 */
-		/*foreach ( $this->dom->find( '.sle-wrapper-element' ) as $key => $element ) {
-			pq( $element )->replaceWith( pq( $element )->php() );
-		}*/
+	private function save_document( $template, $id, $language = false ) {
 
 		/**
 		 * Remove tmp attributes and classes
 		 */
-		$this->dom->find( '*:not(php)' )->removeAttr( 'data-sle-dom-index' )->removeClass( 'sle-editable-text sle-editable-image' );
+		$this->dom->find( '*:not(php)' )->removeAttr( 'data-sle-dom-index' )->removeClass( 'sle-editable-text sle-editable-image sle-editable-link sle-editable-bg-image' );
+
+		/**
+		 * Build the path to save the template
+		 */
+
+		// Get the end part of the path
+		$path = Helpers::replace_first_occurrence( $template, get_template_directory(), '' );
+
+		// Check that the page exists
+		$page = get_post( $id );
+
+		// Append page ID
+		if ( is_object( $page ) && $page->post_type === 'page' ) {
+			$path = '/page-' . $id . $path;
+		}
+
+		// If wpml language defined
+		if ( ! empty( $language ) ) {
+			error_log( $language);
+			$path = '/' . $language . $path;
+		}
+
+		$path = get_template_directory() . '/simple-live-editor' . $path;
+
+		// Create the folders
+		$dir = dirname( $path );
+		if ( ! is_dir( $dir ) ) {
+			mkdir( $dir, 0764, true );
+		}
+
+		error_log( $path );
 
 		/**
 		 * Save the document to template
 		 */
-		file_put_contents( $template, $this->dom->php() );
+		error_log( file_put_contents( $path, $this->dom->php() ) );
 
 	}
 
