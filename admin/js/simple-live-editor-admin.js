@@ -6,11 +6,12 @@
 		// An object holding the lists of edited contents
 		var content = {
 			texts: [],
-			images: []
+			images: [],
+			bgImages: [],
+			links: []
 		};
 
-		var	file_frame,
-			target;
+		var	file_frame;
 
 		/**
 		 * Text editing
@@ -21,7 +22,7 @@
 				settings = window.tinyMCEPreInit.mceInit['sle-editor'];
 
 			settings.setup = function( editor ) {
-				editor.on('change input blur keyup paste copy cut delete mouseup', function()  {
+				editor.on( 'change input blur keyup paste copy cut delete mouseup', function() {
 
 					// Update the element
 					$target.html( editor.getContent() );
@@ -47,19 +48,77 @@
 		 */
 		$( 'body' ).on( 'click', '.sle-edit-link', function( event ) {
 
-			target = $( '.sle-editable-link[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
+			var $target = $( '.sle-editable-link[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
 
-			$( '.sle-link-editor' ).val( $( target ).attr( 'href' ) );
+			$( '.sle-link-editor' ).val( $target.attr( 'href' ) );
 			tb_show( 'Edit Link', '#TB_inline?width=600&height=550&inlineId=sle-link-modal' );
+
+			$( '.sle-link-editor' ).off( 'change input blur keyup paste copy cut delete mouseup' );
+
+			$( '.sle-link-editor' ).on( 'change input blur keyup paste copy cut delete mouseup', function() {
+
+				// Update the change to dom
+				$target.attr( 'href', $( this ).val() );
+
+				// Add the changed link to our content object
+				content.links[ $target.data( 'sle-dom-index' ) ] = $( this ).val();
+
+				// Tell the customize view, we have unsaved content
+				parent.wp.customize.state( 'saved' ).set( false );
+			});
 		});
 
 		/**
 		 * Image editing
-		 * Launch the image selector when and image has been clicked
 		 */
 		$( 'body' ).on( 'click', '.sle-edit-image', function( event ) {
 
-			target = $( '.sle-editable-image[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
+			var $target = $( '.sle-editable-image[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
+
+			open_file_frame( function( url ) {
+
+				// Change the image src
+				$target.attr( 'src', url );
+
+				// Add to list of changes
+				content.images[ $target.data( 'sle-dom-index' ) ] = url;
+
+				// Trigger unsaved state
+				parent.wp.customize.state( 'saved' ).set( false );
+
+			});
+
+		 });
+
+		/**
+		 * Background image editing
+		 */
+		$( 'body' ).on( 'click', '.sle-edit-bg-image', function( event ) {
+
+			var $target = $( '.sle-editable-bg-image[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
+
+			open_file_frame( function( url ) {
+
+				// TODO: replace the first url found with the new url
+				var backgroundImage = 'url("' + url + '")';
+
+				// Change the image src
+				$target.css( 'background-image', backgroundImage );
+
+				// Add to list of changes
+				content.bgImages[ $target.data( 'sle-dom-index' ) ] = backgroundImage;
+
+				// Trigger unsaved state
+				parent.wp.customize.state( 'saved' ).set( false );
+
+			});
+
+		 });
+
+		/**
+		 * Launch the image selector when and image has been clicked
+		 */
+		function open_file_frame( callback ) {
 
 			// If the media frame already exists, reopen it.
 			if ( file_frame ) {
@@ -78,21 +137,13 @@
 				// We set multiple to false so only get one image from the uploader
 				var attachment = file_frame.state().get( 'selection' ).first().toJSON();
 
-				// Change the image src
-				$( target ).attr( 'src', attachment.url );
-
-				// Add to list of changes
-				content.images[ $( target ).data( 'sle-dom-index' ) ] = attachment.url;
-
-				// Trigger unsaved state
-				parent.wp.customize.state( 'saved' ).set( false );
+				callback( attachment.url );
 
 			});
 
 			// Finally, open the modal
 			file_frame.open();
-
-		 });
+		}
 
 		/**
 		 * The editing icons
@@ -119,19 +170,16 @@
 			}
 		});
 
-		/**
-		 * Position the edit icons
-		 */
-		$( '.sle-edit-icon' ).each( function() {
+		function positionIcon( icon ) {
 
 			// Get the target element and icon dimensions
-			var $target = $( '[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' ),
+			var $target = $( '[data-sle-dom-index=' + $( icon ).data( 'sle-target' ) + ']' ),
 				targetOffset = $target.offset(),
 				css = { top: targetOffset.top };
 
-			if ( $( this ).hasClass( 'sle-edit-icon--right' ) ) {
+			if ( $( icon ).hasClass( 'sle-edit-icon--right' ) ) {
 				var targetWidth = $target.width(),
-					iconWidth = $( this ).outerWidth( true );
+					iconWidth = $( icon ).outerWidth( true );
 
 				css.left = targetOffset.left +  ( targetWidth - iconWidth );
 			} else {
@@ -139,7 +187,19 @@
 			}
 
 			// Set the position
-			$( this ).css( css );
+			$( icon ).css( css );
+		}
+
+		/**
+		 * Position the edit icons
+		 */
+		$( '.sle-edit-icon' ).each( function() {
+
+			var icon = this;
+
+			positionIcon( icon );
+
+			setInterval( function() { positionIcon( icon ) }, 200 );
 
 		});
 
@@ -152,9 +212,15 @@
 		});
 
 		$( '[class^="sle-editable-"], [class*=" sle-editable-"]' ).on( 'mouseout', function( event ) {
-			console.log( event.relatedTarget );
-			if ( ! $( event.relatedTarget ).is( '.sle-edit-icon[data-sle-target=' + $( this ).data( 'sle-dom-index' ) + ']' ) ) {
-				$( '.sle-edit-icon[data-sle-target=' + $( this ).data( 'sle-dom-index' ) + ']' ).hide();
+			var $target = $( '.sle-edit-icon[data-sle-target=' + $( this ).data( 'sle-dom-index' ) + ']' );
+
+			if ( ! $( event.relatedTarget ).is( '.sle-edit-icon[data-sle-target=' + $( this ).data( 'sle-dom-index' ) + ']' )
+					&& ! isContainedByElement( event.relatedTarget, this ) ) {
+				$target.hide();
+			} else {
+				$( event.relatedTarget ).on( 'mouseout', function( event ) {
+					$target.hide();
+				});
 			}
 		});
 
@@ -170,6 +236,25 @@
 				$( this ).hide();
 			}
 		});
+
+		function isContainedByElement( element, container ) {
+
+			var elementOffset = $( element ).offset(),
+				elementWidth = $( element ).width(),
+				elementHeight = $( element ).height(),
+				containerOffset = $( container ).offset(),
+				containerWidth = $( container ).outerWidth( true ),
+				containerHeight = $( container ).outerHeight( true );
+
+			if ( elementOffset.left >= containerOffset.left
+					&& elementOffset.top >= containerOffset.top
+					&& elementOffset.left + elementWidth <=  containerOffset.left + containerWidth
+					&& elementOffset.top + elementHeight <=  containerOffset.top + containerHeight ) {
+				return true;
+			} else {
+				return false;
+			}
+		}
 
 		/**
 		 * Save data
