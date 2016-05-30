@@ -6,11 +6,34 @@
 }
 
 /**
+ * Link editing input
+ */
+.sle-input {
+	width: 50%;
+	margin: 20px 0;
+	padding: 3px 5px;
+	font-size: 14px;
+	line-height: 18px;
+	border: 1px solid #ddd;
+	-webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.07);
+	box-shadow: inset 0 1px 2px rgba(0,0,0,.07);
+	background-color: #fff;
+	color: #32373c;
+	outline: 0;
+	-webkit-transition: 50ms border-color ease-in-out;
+	transition: 50ms border-color ease-in-out;
+}
+
+/**
  * Place the thicbox modal on top
  */
-.thickbox-loading,
+#TB_window,
 .TB_overlayBG {
 	z-index: 999999999 !important;
+}
+
+#TB_window {
+	background-color: #eee !important;
 }
 
 /**

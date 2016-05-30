@@ -36,7 +36,7 @@
 			settings.forced_root_block = false;
 
 			tinyMCE.remove();
-			tb_show( 'Edit Content', '#TB_inline?width=600&height=550&inlineId=sle-editor-modal' );
+			tb_show( 'Edit Content', '#TB_inline?width=700&height=450&inlineId=sle-editor-modal' );
 			tinyMCE.init( settings );
 			tinyMCE.get( 'sle-editor' ).setContent( $target.html() );
 		});
@@ -49,7 +49,7 @@
 			var $target = $( '.sle-editable-link[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
 
 			$( '.sle-link-editor' ).val( $target.attr( 'href' ) );
-			tb_show( 'Edit Link', '#TB_inline?width=600&height=550&inlineId=sle-link-modal' );
+			tb_show( 'Edit Link', '#TB_inline?width=700&height=450&inlineId=sle-link-modal' );
 
 			$( '.sle-link-editor' ).off( 'change input blur keyup paste copy cut delete mouseup' );
 

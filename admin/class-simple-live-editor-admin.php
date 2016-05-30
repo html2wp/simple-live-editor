@@ -214,7 +214,7 @@ class Simple_Live_Editor_Admin {
 		global $wp_customize;
 
 		if ( isset( $wp_customize ) ) {
-			echo '<div id="sle-link-modal" class="sle-modal"><input type="text" class="sle-link-editor"></div>';
+			echo '<div id="sle-link-modal" class="sle-modal"><input type="text" class="sle-input sle-link-editor"></div>';
 		}
 	}
 
