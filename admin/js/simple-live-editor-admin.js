@@ -268,7 +268,7 @@
 
 			// Post the data
 			$.post( sleSettings.ajax_url, data, function( response ) {
-				
+				// TODO: reset content array
 			});
 
 		});

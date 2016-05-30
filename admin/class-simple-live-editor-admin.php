@@ -297,7 +297,6 @@ class Simple_Live_Editor_Admin {
 		// Decide which template exists and serve it
 		foreach ( $path_options as $path ) {
 			if ( file_exists( $path ) ) {
-				error_log( $path );
 				return $path;
 			}
 		}
@@ -487,7 +486,6 @@ class Simple_Live_Editor_Admin {
 
 		// If wpml language defined
 		if ( ! empty( $language ) ) {
-			error_log( $language);
 			$path = '/' . $language . $path;
 		}
 
@@ -499,12 +497,10 @@ class Simple_Live_Editor_Admin {
 			mkdir( $dir, 0764, true );
 		}
 
-		error_log( $path );
-
 		/**
 		 * Save the document to template
 		 */
-		error_log( file_put_contents( $path, $this->dom->php() ) );
+		file_put_contents( $path, $this->dom->php() );
 
 	}
 
