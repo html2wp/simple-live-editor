@@ -390,6 +390,8 @@ class Simple_Live_Editor_Admin {
 
 		$this->dom = phpQuery::newDocumentFilePHP( $this->get_current_template( $template ) );
 
+		$this->dom->find( '.sle-text' )->addClass( '.sle-editable-text' );
+
 		/**
 		 * Find all text nodes and mark their parents as editable elements
 		 */
@@ -417,7 +419,6 @@ class Simple_Live_Editor_Admin {
 				// TODO: check that parent not root
 				pq( $element )->parent()->parent()->addClass( 'sle-editable-text' );
 			}
-
 		}
 
 		/**
@@ -452,6 +453,12 @@ class Simple_Live_Editor_Admin {
 		 * Create our indexing for all HTML elements
 		 */
 		foreach ( $this->dom->find( '*:not(php)' ) as $key => $element ) {
+
+			// Don't do anything if parent already an editable field
+			if ( count( pq( $element )->parents( '.sle-editable-text' ) ) > 0 ) {
+				continue;
+			}
+
 			pq( $element )->attr( 'data-sle-dom-index', $key );
 		}
 
@@ -467,7 +474,12 @@ class Simple_Live_Editor_Admin {
 		/**
 		 * Remove tmp attributes and classes
 		 */
-		$this->dom->find( '*:not(php)' )->removeAttr( 'data-sle-dom-index' )->removeClass( 'sle-editable-text sle-editable-image sle-editable-link sle-editable-bg-image' );
+		$this->dom->find( '*:not(php)' )
+			->removeAttr( 'data-sle-dom-index' )
+			->removeClass( 'sle-editable-text' )
+			->removeClass( 'sle-editable-image' )
+			->removeClass( 'sle-editable-link' )
+			->removeClass( 'sle-editable-bg-image' );
 
 		/**
 		 * Build the path to save the template
