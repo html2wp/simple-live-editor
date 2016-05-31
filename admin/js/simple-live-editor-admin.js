@@ -18,7 +18,6 @@
 				var $section = $( '<div>' ).load( 'http://preview-5864.h2.wp/wp-content/themes/onedealerless-webflow/sle-sections/who-we-are.php' );
 				event.item.parentNode.insertBefore( $section.get(0), event.item );
 				event.item.remove();
-				$(document.body).trigger('load');
 			}
 		});
 
