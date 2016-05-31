@@ -11,6 +11,8 @@
 			links: []
 		};
 
+		Sortable.create( $( 'body' ).get( 0 ) );
+
 		/**
 		 * Text editing
 		 */

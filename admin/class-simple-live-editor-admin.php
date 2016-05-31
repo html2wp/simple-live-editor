@@ -122,10 +122,14 @@ class Simple_Live_Editor_Admin {
 			// Thicbox
 			add_thickbox();
 
+			// TinyMCE
 			wp_enqueue_script( 'editor' );
 
+			// Sortable.js
+			wp_enqueue_script( 'sortable', Helpers::get_dir_url( __FILE__ ) . '../node_modules/sortablejs/Sortable.js' );
+
 			// The plugin javascript
-			wp_enqueue_script( $this->plugin_name, Helpers::get_dir_url( __FILE__ ) . 'js/simple-live-editor-admin.js', array( 'jquery', 'thickbox', 'editor' ), $this->version, false );
+			wp_enqueue_script( $this->plugin_name, Helpers::get_dir_url( __FILE__ ) . 'js/simple-live-editor-admin.js', array( 'jquery', 'thickbox', 'editor', 'sortable' ), $this->version, false );
 
 			/**
 			 * Pass settings to javascript
