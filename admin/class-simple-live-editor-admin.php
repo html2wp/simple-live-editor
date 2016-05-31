@@ -98,12 +98,8 @@ class Simple_Live_Editor_Admin {
 
 		if ( isset( $wp_customize ) ) {
 
-			// Medium-editor
-			wp_enqueue_style( 'medium-editor', Helpers::get_dir_url( __FILE__ ) . '../node_modules/medium-editor/dist/css/medium-editor.css' );
-			wp_enqueue_style( 'medium-editor-theme', Helpers::get_dir_url( __FILE__ ) . '../node_modules/medium-editor/dist/css/themes/bootstrap.css', array( 'medium-editor' ) );
-
 			// The plugin stylesheet
-			wp_enqueue_style( $this->plugin_name, Helpers::get_dir_url( __FILE__ ) . 'css/simple-live-editor-admin.css', array( 'dashicons',  'medium-editor-theme' ), $this->version, 'all' );
+			wp_enqueue_style( $this->plugin_name, Helpers::get_dir_url( __FILE__ ) . 'css/simple-live-editor-admin.css', array( 'dashicons' ), $this->version, 'all' );
 		}
 
 	}
@@ -123,16 +119,13 @@ class Simple_Live_Editor_Admin {
 
 		if ( isset( $wp_customize ) ) {
 
-			// Medium-editor
-			wp_enqueue_script( 'medium-editor', Helpers::get_dir_url( __FILE__ ) . '../node_modules/medium-editor/dist/js/medium-editor.js' );
-
 			// Thicbox
 			add_thickbox();
 
 			wp_enqueue_script( 'editor' );
 
 			// The plugin javascript
-			wp_enqueue_script( $this->plugin_name, Helpers::get_dir_url( __FILE__ ) . 'js/simple-live-editor-admin.js', array( 'jquery', 'thickbox', 'medium-editor', 'editor' ), $this->version, false );
+			wp_enqueue_script( $this->plugin_name, Helpers::get_dir_url( __FILE__ ) . 'js/simple-live-editor-admin.js', array( 'jquery', 'thickbox', 'editor' ), $this->version, false );
 
 			/**
 			 * Pass settings to javascript

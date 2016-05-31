@@ -19,8 +19,6 @@
     "content",
     "management"
   ],
-  "dependencies": {
-    "medium-editor": "html2wp/medium-editor#dev"
-  },
+  "dependencies": {},
   "devDependencies": {}
 }
