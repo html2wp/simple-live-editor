@@ -32,6 +32,9 @@
 	z-index: 999999999 !important;
 }
 
+/**
+ * Styling for modals
+ */
 #TB_window {
 	background-color: #eee !important;
 }
@@ -90,4 +93,17 @@
 	font: 400 20px/1 dashicons;
 	position: relative;
 	top: 2px;
+}
+
+/**
+ * Sortable
+ */
+.sle-sortable-ghost {
+	height: 10px !important;
+	background: #4C99E8 !important;
+	color: transparent !important;
+}
+
+.sle-sortable-ghost * {
+	display: none !important;
 }

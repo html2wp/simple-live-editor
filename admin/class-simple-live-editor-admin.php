@@ -101,7 +101,6 @@ class Simple_Live_Editor_Admin {
 			// The plugin stylesheet
 			wp_enqueue_style( $this->plugin_name, Helpers::get_dir_url( __FILE__ ) . 'css/simple-live-editor-admin.css', array( 'dashicons' ), $this->version, 'all' );
 		}
-
 	}
 
 	/**
@@ -149,7 +148,6 @@ class Simple_Live_Editor_Admin {
 
 			wp_localize_script( $this->plugin_name, 'sleSettings', $sle_settings );
 		}
-
 	}
 
 	/**
@@ -167,6 +165,7 @@ class Simple_Live_Editor_Admin {
 	 * @since    1.0.1
 	 */
 	public function show_sle_notice() {
+
 		$message = esc_html__( 'Want to edit text and images? Use Live Editing in the Customize view.', $this->plugin_name );
 		$cta = esc_html__( 'Launch Customizer', $this->plugin_name );
 		$cta_url = admin_url( 'customize.php' );
@@ -179,6 +178,7 @@ class Simple_Live_Editor_Admin {
 		}
 		
 		echo '<div class="notice notice-info sle-notice"><p><span class="dashicons dashicons-edit sle-notice-edit"></span>' . $message . '<a href="' . $cta_url . '" class="btn">' . $cta . '&rarr;</a></p></div>';
+
 	}
 
 	public function add_editor_modal() {
@@ -257,6 +257,7 @@ class Simple_Live_Editor_Admin {
 		eval( '?>' . $this->dom->php() );
 		$this_string = ob_get_contents();
 		ob_end_flush();
+
 	}
 
 	public function get_current_template( $template ) {
@@ -512,5 +513,4 @@ class Simple_Live_Editor_Admin {
 		file_put_contents( $path, $this->dom->php() );
 
 	}
-
 }

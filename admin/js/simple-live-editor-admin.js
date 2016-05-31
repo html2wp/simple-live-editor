@@ -11,7 +11,25 @@
 			links: []
 		};
 
-		Sortable.create( $( 'body' ).get( 0 ) );
+		Sortable.create( $( 'body' ).get( 0 ), {
+			group: { name: 'sections', pull: true, put: true },
+			ghostClass: 'sle-sortable-ghost',
+			onAdd: function ( event ) {
+				var $section = $( '<div>' ).load( 'http://preview-5864.h2.wp/wp-content/themes/onedealerless-webflow/sle-sections/who-we-are.php' );
+				event.item.parentNode.insertBefore( $section.get(0), event.item );
+				event.item.remove();
+				$(document.body).trigger('load');
+			}
+		});
+
+		Sortable.create( $( '#customize-theme-controls > ul', parent.document.body ).get( 0 ), {
+			group: { name: 'sections', pull: 'clone', put: true },
+			ghostClass: 'sle-sortable-ghost',
+			sort: false,
+			onAdd: function ( event ) {
+				event.item.remove();
+			}
+		});
 
 		/**
 		 * Text editing

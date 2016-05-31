@@ -174,16 +174,16 @@ class Simple_Live_Editor {
 		 * The customize view check needs to be done in the callback
 		 */
 		$this->loader->add_action( 'wp_enqueue_scripts', $this->plugin_admin, 'enqueue_styles' );
+		$this->loader->add_action( 'customize_controls_init', $this->plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $this->plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'template_include', $this->plugin_admin, 'serve_template' );
+		$this->loader->add_action( 'wp_footer', $this->plugin_admin, 'add_editor_modal' );
+		$this->loader->add_action( 'wp_footer', $this->plugin_admin, 'add_link_edit_modal' );
 
 		/**
 		 * Ajax
 		 */
 		$this->loader->add_action( 'wp_ajax_sle_save_content', $this->plugin_admin, 'save_content' );
-
-		$this->loader->add_action( 'wp_footer', $this->plugin_admin, 'add_editor_modal' );
-		$this->loader->add_action( 'wp_footer', $this->plugin_admin, 'add_link_edit_modal' );
 
 	}
 
