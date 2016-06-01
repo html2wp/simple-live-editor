@@ -370,6 +370,27 @@ class Simple_Live_Editor_Admin {
 		$this->get_document( $_POST['page_template'] );
 
 		/**
+		 * Arange the sections
+		 */
+		if ( isset( $_POST['content']['sections'] ) ) {
+
+			// Loop through the JSON of edited sections and re-arrange them
+			foreach ( array_filter( $_POST['content']['sections'] ) as $section_area_index => $sections ) {
+				foreach ( $sections as $section_index => $section_dom_index ) {
+
+					// TODO: add the new section in if section_dom_index cand be found from the new_sections array
+					// where the structure is: section_dom_index => section_template
+					// the section_dom_index in this case will be a index created with uniqid during the section loading
+					// to identify the template and its children
+
+					$this->dom
+						->find( "[data-sle-dom-index=$section_dom_index]" )
+						->insertBefore( $this->dom->find( "[data-sle-dom-index=$section_area_index]" )->children()->eq( $section_index + 1 ) );
+				}
+			}
+		}
+
+		/**
 		 * Save the text content
 		 */
 		if ( isset( $_POST['content']['texts'] ) ) {

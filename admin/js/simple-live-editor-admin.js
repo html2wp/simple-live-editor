@@ -8,7 +8,8 @@
 			texts: [],
 			images: [],
 			bgImages: [],
-			links: []
+			links: [],
+			sections: []
 		};
 
 		/**
@@ -252,7 +253,7 @@
 		 * Sections
 		 */
 
-		Sortable.create( $( 'body' ).get( 0 ), {
+		Sortable.create( $( '.wp-sections' ).get( 0 ), {
 			group: { name: 'sections', pull: true, put: true },
 			ghostClass: 'sle-sortable-ghost',
 			onAdd: function( event ) {
@@ -261,6 +262,19 @@
 				event.item.parentNode.insertBefore( $section.get(0), event.item );
 				event.item.remove();
 				// Todo: Send the result of section adding event to server on save
+			},
+			onSort: function( event ) {
+
+				var indexes = [];
+
+				$( event.to ).children( '[data-sle-dom-index], [data-sle-section-template]' ).each( function() {
+					indexes.push( $( this ).data( 'sle-dom-index' ) );
+				});
+
+				content.sections[ $( event.to ).data( 'sle-dom-index' ) ] = indexes;
+
+				// Tell the customize view, we have unsaved content
+				parent.wp.customize.state( 'saved' ).set( false );
 			},
 			onRemove: function( event ) {
 				// Todo: Send the result of section delete event to server on save
