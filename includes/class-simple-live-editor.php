@@ -129,6 +129,11 @@ class Simple_Live_Editor {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-simple-live-editor-helpers.php';
 
 		/**
+		 * The customizer section class
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wp-customize-control-sle-section.php';
+
+		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-simple-live-editor-admin.php';
@@ -169,12 +174,17 @@ class Simple_Live_Editor {
 		$this->plugin_admin = new Simple_Live_Editor_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		/**
-		 * Customize view
+		 * Customize controls
+		 */
+		$this->loader->add_action( 'customize_controls_init', $this->plugin_admin, 'enqueue_styles' );
+		$this->loader->add_action( 'customize_register', $this->plugin_admin, 'add_customize_controls' );
+
+		/**
+		 * Customize preview
 		 * These hooks are actually in the public scope for them to work in the customize view
 		 * The customize view check needs to be done in the callback
 		 */
 		$this->loader->add_action( 'wp_enqueue_scripts', $this->plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'customize_controls_init', $this->plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $this->plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'template_include', $this->plugin_admin, 'serve_template' );
 		$this->loader->add_action( 'wp_footer', $this->plugin_admin, 'add_editor_modal' );

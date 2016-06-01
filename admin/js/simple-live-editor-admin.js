@@ -11,32 +11,6 @@
 			links: []
 		};
 
-		Sortable.create( $( 'body' ).get( 0 ), {
-			group: { name: 'sections', pull: true, put: true },
-			ghostClass: 'sle-sortable-ghost',
-			onAdd: function( event ) {
-				var $section = $( '<div>' ).load( 'http://preview-5864.h2.wp/wp-content/themes/onedealerless-webflow/sle-sections/who-we-are.php' );
-				event.item.parentNode.insertBefore( $section.get(0), event.item );
-				event.item.remove();
-				// Todo: Send the result of section adding event to server on save
-			},
-			onRemove: function( event ) {
-				// Todo: Send the result of section delete event to server on save
-			},
-			onUpdate: function( event ) {
-				// Todo: Send the result of section sorting event to server on save
-			},
-		});
-
-		Sortable.create( $( '#customize-theme-controls > ul', parent.document.body ).get( 0 ), {
-			group: { name: 'sections', pull: 'clone', put: true },
-			ghostClass: 'sle-sortable-ghost',
-			sort: false,
-			onAdd: function ( event ) {
-				event.item.remove();
-			}
-		});
-
 		/**
 		 * Text editing
 		 */
@@ -273,6 +247,37 @@
 				return false;
 			}
 		}
+
+		/**
+		 * Sections
+		 */
+
+		Sortable.create( $( 'body' ).get( 0 ), {
+			group: { name: 'sections', pull: true, put: true },
+			ghostClass: 'sle-sortable-ghost',
+			onAdd: function( event ) {
+				var $section = $( '<div>' ).load( 'http://preview-5864.h2.wp/wp-content/themes/onedealerless-webflow/sle-sections/who-we-are.php' );
+				// TODO: don't add the extra div to dom
+				event.item.parentNode.insertBefore( $section.get(0), event.item );
+				event.item.remove();
+				// Todo: Send the result of section adding event to server on save
+			},
+			onRemove: function( event ) {
+				// Todo: Send the result of section delete event to server on save
+			},
+			onUpdate: function( event ) {
+				// Todo: Send the result of section sorting event to server on save
+			},
+		});
+
+		Sortable.create( $( '.sle-sections-list', parent.document.body ).get( 0 ), {
+			group: { name: 'sections', pull: 'clone', put: true },
+			ghostClass: 'sle-sortable-ghost',
+			sort: false,
+			onAdd: function ( event ) {
+				event.item.remove();
+			}
+		});
 
 		/**
 		 * Save data

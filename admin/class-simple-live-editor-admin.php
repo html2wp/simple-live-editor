@@ -150,6 +150,60 @@ class Simple_Live_Editor_Admin {
 		}
 	}
 
+	public function add_customize_controls( $wp_customize ) {
+
+		/**
+		 * Add the setting
+		 */
+		$wp_customize->add_section( 'sle_settings_section', array(
+			'title' => 'Simple Live Editor'
+		 ));
+
+		/**
+		 * Language selector
+		 */
+		$wp_customize->add_setting( 'sle_language_setting', array(
+			'default' => 'lol',
+		));
+
+		$wp_customize->add_control( 'sle_language_setting', array(
+			'label'   => 'Language',
+			'section' => 'sle_settings_section',
+			'type'    => 'select',
+			'choices' => array( 'lol' => 'lol' ),
+		));
+
+		/**
+		 * Page selector
+		 */
+		$wp_customize->add_setting( 'sle_page_setting', array(
+			'default' => 'lol',
+		));
+
+		$wp_customize->add_control( 'sle_page_setting', array(
+			'label'   => 'Page',
+			'section' => 'sle_settings_section',
+			'type'    => 'select',
+			'choices' => array( 'lol' => 'lol' ),
+		));
+
+		/**
+		 * Sections
+		 */
+		sle_init_wp_customize_control_sle_section();
+
+		$wp_customize->add_setting( 'sle_section_setting' );
+
+		$wp_customize->add_control( new WP_Customize_Control_Sle_Section(
+			$wp_customize,
+			'sle_section_setting',
+			array(
+				'label'	=> 'Sections',
+				'section' => 'sle_settings_section'
+			)
+		));
+	}
+
 	/**
 	 * Adds the necessary styles for the page editing view notice
 	 *
