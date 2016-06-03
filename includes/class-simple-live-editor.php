@@ -193,6 +193,7 @@ class Simple_Live_Editor {
 		/**
 		 * Ajax
 		 */
+		$this->loader->add_action( 'wp_ajax_sle_get_content', $this->plugin_admin, 'get_content' );
 		$this->loader->add_action( 'wp_ajax_sle_save_content', $this->plugin_admin, 'save_content' );
 
 	}

@@ -162,10 +162,9 @@ class Simple_Live_Editor_Admin {
 		/**
 		 * Language selector
 		 */
-		
 		if ( function_exists( 'icl_get_languages' ) ) {
-		
-			$languages = icl_get_languages('skip_missing=0&orderby=KEY&order=DIR&link_empty_to=str');
+
+			$languages = icl_get_languages( 'skip_missing=0&orderby=KEY&order=DIR&link_empty_to=str' );
 
 			if ( $languages ) {
 
@@ -221,18 +220,30 @@ class Simple_Live_Editor_Admin {
 		/**
 		 * Sections
 		 */
-		sle_init_wp_customize_control_sle_section();
+		$files = Helpers::glob_recursive( get_stylesheet_directory() . '/simple-live-editor/sections/*.php' );
 
-		$wp_customize->add_setting( 'sle_section_setting' );
+		if ( $files ) {
 
-		$wp_customize->add_control( new WP_Customize_Control_Sle_Section(
-			$wp_customize,
-			'sle_section_setting',
-			array(
-				'label'	=> 'Sections',
-				'section' => 'sle_settings_section'
-			)
-		));
+			$choices = array();
+
+			foreach ( $files as $file ) {
+				$choices[ Helpers::replace_first_occurrence( $file, Helpers::get_sections_directory(), '' ) ] = Helpers::get_title_from_slug( basename( $file, '.php' ) );
+			}
+
+			sle_init_wp_customize_control_sle_section();
+
+			$wp_customize->add_setting( 'sle_section_setting' );
+
+			$wp_customize->add_control( new WP_Customize_Control_Sle_Section(
+				$wp_customize,
+				'sle_section_setting',
+				array(
+					'label'	  => 'Sections',
+					'section' => 'sle_settings_section',
+					'choices' => $choices
+				)
+			));
+		}
 	}
 
 	/**
@@ -330,10 +341,10 @@ class Simple_Live_Editor_Admin {
 
 	}
 
-	public function prepare_template_for_editing( $template ) {
+	public function prepare_template_for_editing( $template, $key_prefix = '' ) {
 
 		// Get the document
-		$this->get_document( $template );
+		$this->dom = $this->get_document( $template, $key_prefix );
 
 		/**
 		 * Output the document
@@ -348,8 +359,8 @@ class Simple_Live_Editor_Admin {
 	public function get_current_template( $template ) {
 
 		// Get the start and end part of the path
-		$path_prefix = get_template_directory() . '/simple-live-editor';
-		$path_suffix = Helpers::replace_first_occurrence( $template, get_template_directory(), '' );
+		$path_prefix = get_stylesheet_directory() . '/simple-live-editor';
+		$path_suffix = Helpers::replace_first_occurrence( $template, get_stylesheet_directory(), '' );
 		
 		// If wpml language defined
 		if ( defined( 'ICL_LANGUAGE_CODE' ) ) {
@@ -386,6 +397,24 @@ class Simple_Live_Editor_Admin {
 	}
 
 	/**
+	 * Get content to be edited
+	 *
+	 * @since    2.0.0
+	 */
+	public function get_content() {
+
+		// Check that we have the necessary fields
+		if ( ! isset( $_GET['template'] ) ) {
+			wp_die();
+		}
+
+		// Output template
+		$this->prepare_template_for_editing( Helpers::get_sections_directory() . sanitize_file_name( $_GET['template'] ), true );
+
+		wp_die();
+	}
+
+	/**
 	 * Save the content that has been edited
 	 *
 	 * @since    1.0.0
@@ -393,31 +422,42 @@ class Simple_Live_Editor_Admin {
 	public function save_content() {
 
 		// Check that we have the necessary fields
-		if ( !isset( $_POST['page_template'] ) || !isset( $_POST['page_id'] ) || !isset( $_POST['content'] ) ) {
+		if ( ! isset( $_POST['page_template'] ) || ! isset( $_POST['page_id'] ) || ! isset( $_POST['content'] ) ) {
 			wp_die();
 		}
 
+		// Sanitize
+		$page_id = sanitize_key( $_POST['page_id'] );
+
 		// Get the document
-		$this->get_document( $_POST['page_template'] );
+		$this->dom = $this->get_document( $_POST['page_template'] );
 
 		/**
-		 * Arange the sections
+		 * Arrange the sections
 		 */
 		if ( isset( $_POST['content']['sections'] ) ) {
 
 			// Loop through the JSON of edited sections and re-arrange them
-			foreach ( array_filter( $_POST['content']['sections'] ) as $section_area_index => $sections ) {
+			foreach ( $_POST['content']['sections'] as $section_area_index => $sections ) {
 				foreach ( $sections as $section_index => $section_dom_index ) {
 
-					// TODO: add the new section in if section_dom_index cand be found from the new_sections array
-					// where the structure is: section_dom_index => section_template
-					// the section_dom_index in this case will be a index created with uniqid during the section loading
-					// to identify the template and its children
+					// Add the new section in if section_dom_index cand be found from the new_sections array
+					// where the structure is: section_dom_prefix => section_template.
+					// The section_dom_index in this case will be a index created with uniqid during the section loading
+					// to identify the template and its children.
+					// Otherwise just use the existing section.
+					if ( isset( $_POST['content']['newSections'] ) && array_key_exists( $section_dom_index, $_POST['content']['newSections'] ) ) {
+						$section = $this->get_document( Helpers::get_sections_directory() . sanitize_file_name( $_POST['content']['newSections'][ $section_dom_index ] ), $section_dom_index );
+					} else {
+						$section = $this->dom->find( "[data-sle-dom-index=$section_dom_index]" );
+					}
 
-					$this->dom
-						->find( "[data-sle-dom-index=$section_dom_index]" )
-						->insertBefore( $this->dom->find( "[data-sle-dom-index=$section_area_index]" )->children()->eq( $section_index + 1 ) );
+					// Re-arrange the sections
+					$section->insertBefore( $this->dom->find( "[data-sle-dom-index=$section_area_index]" )->children()->eq( $section_index + 1 ) );
 				}
+
+				// TODO: phpquery looses the section class from the parent element for some reason? fix this more elegantly
+				$this->dom->find( "[data-sle-dom-index=$section_area_index]" )->addClass( 'wp-sections' );
 			}
 		}
 
@@ -427,7 +467,7 @@ class Simple_Live_Editor_Admin {
 		if ( isset( $_POST['content']['texts'] ) ) {
 
 			// Loop through the JSON of edited texts and change the value to document
-			foreach ( array_filter( $_POST['content']['texts'] ) as $index => $html ) {
+			foreach ( $_POST['content']['texts'] as $index => $html ) {
 				$this->dom->find( ".sle-editable-text[data-sle-dom-index=$index]" )->html( $this->purifier->purify( stripslashes( $html ) ) );
 			}
 		}
@@ -438,7 +478,7 @@ class Simple_Live_Editor_Admin {
 		if ( isset( $_POST['content']['links'] ) ) {
 
 			// Loop through the JSON of edited link and change the value to document
-			foreach ( array_filter( $_POST['content']['links'] ) as $index => $href ) {
+			foreach ( $_POST['content']['links'] as $index => $href ) {
 				$this->dom->find( ".sle-editable-link[data-sle-dom-index=$index]" )->attr( 'href', esc_url( stripslashes( $href ) ) );
 			}
 		}
@@ -449,7 +489,7 @@ class Simple_Live_Editor_Admin {
 		if ( isset( $_POST['content']['images'] ) ) {
 
 			// Loop through the JSON of edited images and change the values to document
-			foreach ( array_filter( $_POST['content']['images'] ) as $index => $src ) {
+			foreach ( $_POST['content']['images'] as $index => $src ) {
 
 				$src = esc_url( stripslashes( $src ) );
 				$element = $this->dom->find( ".sle-editable-image[data-sle-dom-index=$index]" )->get(0);
@@ -469,16 +509,27 @@ class Simple_Live_Editor_Admin {
 		if ( isset( $_POST['content']['bgImages'] ) ) {
 
 			// Loop through the JSON of edited background iamges and change the value to document
-			foreach ( array_filter( $_POST['content']['bgImages'] ) as $index => $background_image ) {
+			foreach ( $_POST['content']['bgImages'] as $index => $background_image ) {
 				$this->dom->find( "[data-sle-dom-index=$index]" )->attr( 'style', $this->purifier->purify( stripslashes( $background_image ) ) );
+			}
+		}
+
+		/**
+		 * Remove elements
+		 */
+		if ( isset( $_POST['content']['removals'] ) ) {
+
+			// Loop through the JSON of removed elements and remove them
+			foreach ( array_filter( $_POST['content']['removals'] ) as $index ) {
+				$this->dom->find( "[data-sle-dom-index=$index]" )->remove();
 			}
 		}
 
 		// Save document
 		if ( isset( $_POST['language_code'] ) ) {
-			$this->save_document( $_POST['page_template'], $_POST['page_id'], $_POST['language_code'] );
+			$this->save_document( $_POST['page_template'], $page_id, $_POST['language_code'] );
 		} else {
-			$this->save_document( $_POST['page_template'], $_POST['page_id'] );
+			$this->save_document( $_POST['page_template'], $page_id );
 		}
 
 		wp_die();
@@ -490,16 +541,20 @@ class Simple_Live_Editor_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	private function get_document( $template ) {
+	private function get_document( $template, $key_prefix = '' ) {
 
-		$this->dom = phpQuery::newDocumentFilePHP( $this->get_current_template( $template ) );
+		if ( empty( $key_prefix ) ) {
+			$dom = phpQuery::newDocumentFilePHP( $this->get_current_template( $template ) );
+		} else {
+			$dom = phpQuery::newDocumentFilePHP( $template );
+		}
 
-		$this->dom->find( '.sle-text' )->addClass( '.sle-editable-text' );
+		$dom->find( '.sle-text' )->addClass( 'sle-editable-text' );
 
 		/**
 		 * Find all text nodes and mark their parents as editable elements
 		 */
-		foreach ( $this->dom->find( '*:not(php)' )->contents() as $key => $element ) {
+		foreach ( $dom->find( '*:not(php)' )->contents() as $key => $element ) {
 
 			// Don't do anything if parent already an editable field
 			if ( count( pq( $element )->parents( '.sle-editable-text' ) ) > 0 ) {
@@ -520,7 +575,7 @@ class Simple_Live_Editor_Admin {
 				}*/
 
 				// Mark as editable
-				// TODO: check that parent not root
+				// TODO: stop at body / sle-section
 				pq( $element )->parent()->parent()->addClass( 'sle-editable-text' );
 			}
 		}
@@ -528,7 +583,7 @@ class Simple_Live_Editor_Admin {
 		/**
 		 * Find all images and mark them as editable elements
 		 */
-		foreach ( $this->dom->find( 'img' ) as $key => $element ) {
+		foreach ( $dom->find( 'img' ) as $key => $element ) {
 
 			// Don't do anything if parent already an editable field
 			if ( count( pq( $element )->parents( '.sle-editable-text' ) ) > 0 ) {
@@ -542,7 +597,7 @@ class Simple_Live_Editor_Admin {
 		/**
 		 * Find all links and mark them as editable elements
 		 */
-		foreach ( $this->dom->find( 'a:not(.sle-editable-text)' ) as $key => $element ) {
+		foreach ( $dom->find( 'a:not(.sle-editable-text)' ) as $key => $element ) {
 
 			// Don't do anything if parent already an editable field
 			if ( count( pq( $element )->parents( '.sle-editable-text' ) ) > 0 ) {
@@ -556,16 +611,24 @@ class Simple_Live_Editor_Admin {
 		/**
 		 * Create our indexing for all HTML elements
 		 */
-		foreach ( $this->dom->find( '*:not(php)' ) as $key => $element ) {
+		
+		// If new key prefix required, create it
+		if ( $key_prefix === true ) {
+			$key_prefix = uniqid();
+			$dom->find( '*:not(php)' )->eq( 0 )->attr( 'data-sle-dom-index-prefix', $key_prefix );
+		}
+
+		foreach ( $dom->find( '*:not(php)' ) as $key => $element ) {
 
 			// Don't do anything if parent already an editable field
 			if ( count( pq( $element )->parents( '.sle-editable-text' ) ) > 0 ) {
 				continue;
 			}
 
-			pq( $element )->attr( 'data-sle-dom-index', $key );
+			pq( $element )->attr( 'data-sle-dom-index', empty( $key_prefix ) ? $key : $key_prefix . '_' . $key );
 		}
 
+		return $dom;
 	}
 
 	/**
@@ -590,7 +653,7 @@ class Simple_Live_Editor_Admin {
 		 */
 
 		// Get the end part of the path
-		$path = Helpers::replace_first_occurrence( $template, get_template_directory(), '' );
+		$path = Helpers::replace_first_occurrence( $template, get_stylesheet_directory(), '' );
 
 		// Check that the page exists
 		$page = get_post( $id );
@@ -605,7 +668,7 @@ class Simple_Live_Editor_Admin {
 			$path = '/' . $language . $path;
 		}
 
-		$path = get_template_directory() . '/simple-live-editor' . $path;
+		$path = get_stylesheet_directory() . '/simple-live-editor' . $path;
 
 		// Create the folders
 		$dir = dirname( $path );

@@ -5,11 +5,13 @@
 
 		// An object holding the lists of edited contents
 		var content = {
-			texts: [],
-			images: [],
-			bgImages: [],
-			links: [],
-			sections: []
+			texts: {},
+			images: {},
+			bgImages: {},
+			links: {},
+			sections: {},
+			newSections: {},
+			removals: []
 		};
 
 		/**
@@ -35,6 +37,7 @@
 			};
 
 			settings.forced_root_block = false;
+			settings.height = '300';
 
 			tinyMCE.remove();
 			tb_show( 'Edit Content', '#TB_inline?width=700&height=450&inlineId=sle-editor-modal' );
@@ -74,7 +77,7 @@
 
 			var $target = $( '.sle-editable-image[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
 
-			open_file_frame( function( url ) {
+			openFileFrame( function( url ) {
 
 				// Change the image src
 				$target.attr( 'src', url );
@@ -96,7 +99,7 @@
 
 			var $target = $( '.sle-editable-bg-image[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
 
-			open_file_frame( function( url ) {
+			openFileFrame( function( url ) {
 
 				// Replace the first url found with the new url
 				var backgroundImage = $target.css( 'background-image' ).replace( /url\((.*?)\)/i, 'url(' + url + ')' );
@@ -117,51 +120,30 @@
 		/**
 		 * Launch the image selector when and image has been clicked
 		 */
-		function open_file_frame( callback ) {
+		function openFileFrame( callback ) {
 
 			// Create the media frame.
-			var	file_frame = parent.wp.media.frames.file_frame = parent.wp.media({
+			var	fileFrame = parent.wp.media.frames.file_frame = parent.wp.media({
 				multiple: false
 			});
 
 			// When an image is selected, run a callback.
-			file_frame.on( 'select', function() {
+			fileFrame.on( 'select', function() {
 
 				// We set multiple to false so only get one image from the uploader
-				var attachment = file_frame.state().get( 'selection' ).first().toJSON();
+				var attachment = fileFrame.state().get( 'selection' ).first().toJSON();
 
 				callback( attachment.url );
 
 			});
 
 			// Finally, open the modal
-			file_frame.open();
+			fileFrame.open();
 		}
 
 		/**
 		 * The editing icons
 		 */
-
-		 // Wrap the editable images to display the edit icon
-		$( '.sle-editable-image' ).each( function( index ) {
-			$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--pen sle-edit-image" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
-		});
-
-		$( '.sle-editable-text' ).each( function( index ) {
-			$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--pen sle-edit-text" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
-		});
-
-		$( '.sle-editable-link' ).each( function( index ) {
-			$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--link sle-edit-icon--right sle-edit-link" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
-		});
-
-		$( '[data-sle-dom-index]' ).each( function( index ) {
-
-			if ( $( this ).css( 'background-image' ) !== 'none' ) {
-				$( this ).addClass( 'sle-editable-bg-image' );
-				$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--pen sle-edit-bg-image" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
-			}
-		});
 
 		function positionIcon( icon ) {
 
@@ -183,28 +165,57 @@
 			$( icon ).css( css );
 		}
 
-		/**
-		 * Position the edit icons
-		 */
-		$( '.sle-edit-icon' ).each( function() {
+		function addEditIcons( element ) {
 
-			var icon = this;
+			// Wrap the editable images to display the edit icon
+			$( element ).find( '.sle-editable-image' ).each( function( index ) {
+				$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--pen sle-edit-image" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
+			});
 
-			positionIcon( icon );
+			$( element ).find( '.sle-editable-text' ).each( function( index ) {
+				$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--pen sle-edit-text" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
+			});
 
-			setInterval( function() { positionIcon( icon ) }, 200 );
+			$( element ).find( '.sle-editable-link' ).each( function( index ) {
+				$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--link sle-edit-icon--right sle-edit-link" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
+			});
 
-		});
+			$( element ).find( '[data-sle-dom-index]' ).each( function( index ) {
+
+				if ( $( this ).css( 'background-image' ) !== 'none' ) {
+					$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--pen sle-edit-bg-image" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
+					$( this ).addClass( 'sle-editable-bg-image' );
+				}
+			});
+
+			/**
+			 * Position the edit icons
+			 */
+			$( '.sle-edit-icon:not([data-sle-icon-inited])' ).each( function() {
+
+				var icon = this;
+
+				positionIcon( icon );
+
+				setInterval( function() { positionIcon( icon ) }, 200 );
+
+				$( this ).attr( 'data-sle-icon-inited', 'true' );
+
+			});
+
+		}
+
+		addEditIcons( document.body );
 
 		/**
 		 * Hover effects for the edit icons
 		 */
 		
-		$( '[class^="sle-editable-"], [class*=" sle-editable-"]' ).on( 'mouseover', function( event ) {
+		$( 'body' ).on( 'mouseover', '[class^="sle-editable-"], [class*=" sle-editable-"]', function( event ) {
 			$( '.sle-edit-icon[data-sle-target=' + $( this ).data( 'sle-dom-index' ) + ']' ).show();
 		});
 
-		$( '[class^="sle-editable-"], [class*=" sle-editable-"]' ).on( 'mouseout', function( event ) {
+		$( 'body' ).on( 'mouseout', '[class^="sle-editable-"], [class*=" sle-editable-"]', function( event ) {
 			var $target = $( '.sle-edit-icon[data-sle-target=' + $( this ).data( 'sle-dom-index' ) + ']' );
 
 			// TODO: if the element is a sibling and contained by the element don't end the hover
@@ -213,11 +224,11 @@
 			}
 		});
 
-		$( '.sle-edit-icon' ).on( 'mouseover', function( event ) {
+		$( 'body' ).on( 'mouseover', '.sle-edit-icon', function( event ) {
 			$( '[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' ).addClass( 'sle-hover' );
 		});
 
-		$( '.sle-edit-icon' ).on( 'mouseout', function( event ) {
+		$( 'body' ).on( 'mouseout', '.sle-edit-icon', function( event ) {
 
 			$( '[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' ).removeClass( 'sle-hover' );
 
@@ -252,38 +263,76 @@
 		/**
 		 * Sections
 		 */
+		
+		function saveSectionOrder( event ) {
 
-		Sortable.create( $( '.wp-sections' ).get( 0 ), {
-			group: { name: 'sections', pull: true, put: true },
-			ghostClass: 'sle-sortable-ghost',
-			onAdd: function( event ) {
-				var $section = $( '<div>' ).load( 'http://preview-5864.h2.wp/wp-content/themes/onedealerless-webflow/sle-sections/who-we-are.php' );
-				// TODO: don't add the extra div to dom
-				event.item.parentNode.insertBefore( $section.get(0), event.item );
-				event.item.remove();
-				// Todo: Send the result of section adding event to server on save
-			},
-			onSort: function( event ) {
+			var indexes = [];
 
-				var indexes = [];
+			$( event.to ).children( '[data-sle-dom-index]' ).each( function() {
 
-				$( event.to ).children( '[data-sle-dom-index], [data-sle-section-template]' ).each( function() {
+				if ( $( this ).data( 'sle-dom-index-prefix' ) ) {
+					indexes.push( $( this ).data( 'sle-dom-index-prefix' ) );
+				} else {
 					indexes.push( $( this ).data( 'sle-dom-index' ) );
-				});
+				}
+			});
 
-				content.sections[ $( event.to ).data( 'sle-dom-index' ) ] = indexes;
+			content.sections[ $( event.to ).data( 'sle-dom-index' ) ] = indexes;
 
-				// Tell the customize view, we have unsaved content
-				parent.wp.customize.state( 'saved' ).set( false );
-			},
-			onRemove: function( event ) {
-				// Todo: Send the result of section delete event to server on save
-			},
-			onUpdate: function( event ) {
-				// Todo: Send the result of section sorting event to server on save
-			},
+			// Tell the customize view, we have unsaved content
+			parent.wp.customize.state( 'saved' ).set( false );
+		}
+
+		// The list of sections in the ui
+		$( '.wp-sections' ).each( function() {
+
+			Sortable.create( this, {
+				group: { name: 'sections', pull: true, put: true },
+				ghostClass: 'sle-sortable-ghost',
+				onAdd: function( event ) {
+
+					// The data to save
+					var data = {
+						'action': 'sle_get_content',
+						'template': $( event.item ).data( 'sle-section-template' )
+					};
+
+					$( event.item ).hide();
+
+					// Get the data
+					$.get( sleSettings.ajax_url, data, function( response ) {
+
+						// Create section
+						var $section = $( response );
+						$section.insertBefore( event.item );
+
+						// Save new section info
+						content.newSections[ $section.data( 'sle-dom-index-prefix' ) ] = $( event.item ).data( 'sle-section-template' );
+
+						// Remove the tmp item
+						event.item.remove();
+
+						// Add edit icons
+						addEditIcons( $section );
+
+						// Save new section order
+						saveSectionOrder( event );
+					});
+				},
+				onRemove: function( event ) {
+
+					// Save the info about the removed element
+					content.removals.push( $( event.item ).data( 'sle-dom-index' ) );
+
+					// Tell the customize view, we have unsaved content
+					parent.wp.customize.state( 'saved' ).set( false );
+
+				},
+				onUpdate: saveSectionOrder
+			});
 		});
 
+		// The customizer list of sections
 		Sortable.create( $( '.sle-sections-list', parent.document.body ).get( 0 ), {
 			group: { name: 'sections', pull: 'clone', put: true },
 			ghostClass: 'sle-sortable-ghost',
