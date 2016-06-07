@@ -429,8 +429,14 @@ class Simple_Live_Editor_Admin {
 		// Sanitize
 		$page_id = sanitize_key( $_POST['page_id'] );
 
+		if ( empty( $_POST['page_template'] ) ) {
+			$page_template = get_stylesheet_directory() . '/index.php';
+		} else {
+			$page_template = $_POST['page_template'];
+		}
+
 		// Get the document
-		$this->dom = $this->get_document( $_POST['page_template'] );
+		$this->dom = $this->get_document( $page_template );
 
 		/**
 		 * Arrange the sections
@@ -527,9 +533,9 @@ class Simple_Live_Editor_Admin {
 
 		// Save document
 		if ( isset( $_POST['language_code'] ) ) {
-			$this->save_document( $_POST['page_template'], $page_id, $_POST['language_code'] );
+			$this->save_document( $page_template, $page_id, $_POST['language_code'] );
 		} else {
-			$this->save_document( $_POST['page_template'], $page_id );
+			$this->save_document( $page_template, $page_id );
 		}
 
 		wp_die();
