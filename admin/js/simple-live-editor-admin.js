@@ -149,8 +149,14 @@
 
 			// Get the target element and icon dimensions
 			var $target = $( '[data-sle-dom-index=' + $( icon ).data( 'sle-target' ) + ']' ),
-				targetOffset = $target.offset(),
-				css = { top: targetOffset.top };
+				targetOffset = $target.offset();
+
+			// If the element is hidden
+			if ( targetOffset == null ) {
+				return false;
+			}
+
+			var css = { top: targetOffset.top };
 
 			if ( $( icon ).hasClass( 'sle-edit-icon--right' ) ) {
 				var targetWidth = $target.width(),
