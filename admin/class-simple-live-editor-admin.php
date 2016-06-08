@@ -334,7 +334,7 @@ class Simple_Live_Editor_Admin {
 		}
 
 		// In customizer prepare the template for editing
-		$this->prepare_template_for_editing( $template );
+		$this->prepare_template_for_editing( $current_template );
 
 		// No need to return a template name anymore
 		return;
