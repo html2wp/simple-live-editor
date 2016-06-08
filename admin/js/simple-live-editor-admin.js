@@ -339,14 +339,18 @@
 		});
 
 		// The customizer list of sections
-		Sortable.create( $( '.sle-sections-list', parent.document.body ).get( 0 ), {
-			group: { name: 'sections', pull: 'clone', put: true },
-			ghostClass: 'sle-sortable-ghost',
-			sort: false,
-			onAdd: function ( event ) {
-				event.item.remove();
-			}
-		});
+		var sectionList = $( '.sle-sections-list', parent.document.body ).get( 0 );
+
+		if ( sectionList ) {
+			Sortable.create( sectionList, {
+				group: { name: 'sections', pull: 'clone', put: true },
+				ghostClass: 'sle-sortable-ghost',
+				sort: false,
+				onAdd: function ( event ) {
+					event.item.remove();
+				}
+			});
+		}
 
 		/**
 		 * Save data
