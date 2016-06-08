@@ -459,7 +459,7 @@ class Simple_Live_Editor_Admin {
 					}
 
 					// Re-arrange the sections
-					$section->insertBefore( $this->dom->find( "[data-sle-dom-index=$section_area_index]" )->children()->eq( $section_index + 1 ) );
+					$this->dom->find( "[data-sle-dom-index=$section_area_index]" )->append( $section );
 				}
 
 				// TODO: phpquery looses the section class from the parent element for some reason? fix this more elegantly
