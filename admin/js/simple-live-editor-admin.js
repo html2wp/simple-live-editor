@@ -4,15 +4,21 @@
 	$(function() {
 
 		// An object holding the lists of edited contents
-		var content = {
-			texts: {},
-			images: {},
-			bgImages: {},
-			links: {},
-			sections: {},
-			newSections: {},
-			removals: []
-		};
+		var content;
+
+		function resetContentObject() {
+			content = {
+				texts: {},
+				images: {},
+				bgImages: {},
+				links: {},
+				sections: {},
+				newSections: {},
+				removals: []
+			};
+		}
+
+		resetContentObject();
 
 		/**
 		 * Text editing
@@ -356,8 +362,10 @@
 		 * Save data
 		 */
 		
+		var customize = parent.wp.customize;
+		
 		// Bind to the customize view saved event
-		parent.wp.customize.bind( 'saved', function() {
+		customize.bind( 'saved', function() {
 
 			// The data to save
 			var data = {
@@ -372,10 +380,10 @@
 			}
 
 			// Post the data
-			$.post( sleSettings.ajax_url, data, function( response ) {
-				// TODO: reset content array
+			$.post( sleSettings.ajax_url, data ).always( function() {
+				resetContentObject();
+				customize.previewer.refresh();
 			});
-
 		});
 	
 	});

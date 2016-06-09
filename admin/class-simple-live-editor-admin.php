@@ -318,8 +318,10 @@ class Simple_Live_Editor_Admin {
 	 */
 	public function serve_template( $template ) {
 
+		global $post;
+
 		// Get the currently relevant template
-		$current_template = $this->get_current_template( $template );
+		$current_template = $this->get_current_template( $template, $post );
 
 		/**
 		 * The function gets loaded in the public scope,
@@ -341,10 +343,10 @@ class Simple_Live_Editor_Admin {
 
 	}
 
-	public function prepare_template_for_editing( $template, $key_prefix = '' ) {
+	public function prepare_template_for_editing( $template, $key_prefix = '', $post = false ) {
 
 		// Get the document
-		$this->dom = $this->get_document( $template, $key_prefix );
+		$this->dom = $this->get_document( $template, $key_prefix, $post );
 
 		/**
 		 * Output the document
@@ -356,7 +358,7 @@ class Simple_Live_Editor_Admin {
 
 	}
 
-	public function get_current_template( $template ) {
+	public function get_current_template( $template, $post ) {
 
 		// Get the start and end part of the path
 		$path_prefix = get_stylesheet_directory() . '/simple-live-editor';
@@ -368,8 +370,6 @@ class Simple_Live_Editor_Admin {
 		} else {
 			$path_language_part = '';
 		}
-
-		global $post;
 
 		// Check that the page exists
 		// And append page ID
@@ -436,7 +436,7 @@ class Simple_Live_Editor_Admin {
 		}
 
 		// Get the document
-		$this->dom = $this->get_document( $page_template );
+		$this->dom = $this->get_document( $page_template, '', get_post( $page_id ) );
 
 		/**
 		 * Arrange the sections
@@ -444,8 +444,8 @@ class Simple_Live_Editor_Admin {
 		if ( isset( $_POST['content']['sections'] ) ) {
 
 			// Loop through the JSON of edited sections and re-arrange them
-			foreach ( $_POST['content']['sections'] as $section_area_index => $sections ) {
-				foreach ( $sections as $section_index => $section_dom_index ) {
+			foreach ( $_POST['content']['sections'] as $section_area_index => $section_dom_indexes ) {
+				foreach ( $section_dom_indexes as $section_index => $section_dom_index ) {
 
 					// Add the new section in if section_dom_index cand be found from the new_sections array
 					// where the structure is: section_dom_prefix => section_template.
@@ -455,15 +455,14 @@ class Simple_Live_Editor_Admin {
 					if ( isset( $_POST['content']['newSections'] ) && array_key_exists( $section_dom_index, $_POST['content']['newSections'] ) ) {
 						$section = $this->get_document( Helpers::get_sections_directory() . sanitize_file_name( $_POST['content']['newSections'][ $section_dom_index ] ), $section_dom_index );
 					} else {
-						$section = $this->dom->find( "[data-sle-dom-index=$section_dom_index]" );
+						$section = $this->dom->find( "[data-sle-dom-index=$section_area_index] > [data-sle-dom-index=$section_dom_index]" );
 					}
 
 					// Re-arrange the sections
-					$this->dom->find( "[data-sle-dom-index=$section_area_index]" )->append( $section );
+					if ( $section ) {
+						$this->dom->find( "[data-sle-dom-index=$section_area_index]" )->append( $section );
+					}
 				}
-
-				// TODO: phpquery looses the section class from the parent element for some reason? fix this more elegantly
-				$this->dom->find( "[data-sle-dom-index=$section_area_index]" )->addClass( 'wp-sections' );
 			}
 		}
 
@@ -547,10 +546,10 @@ class Simple_Live_Editor_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	private function get_document( $template, $key_prefix = '' ) {
+	private function get_document( $template, $key_prefix = '', $post = false ) {
 
 		if ( empty( $key_prefix ) ) {
-			$dom = phpQuery::newDocumentFilePHP( $this->get_current_template( $template ) );
+			$dom = phpQuery::newDocumentFilePHP( $this->get_current_template( $template, $post ) );
 		} else {
 			$dom = phpQuery::newDocumentFilePHP( $template );
 		}
