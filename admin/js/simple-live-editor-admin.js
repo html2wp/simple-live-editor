@@ -107,8 +107,16 @@
 
 			openFileFrame( function( url ) {
 
+				var backgroundImage,
+					urlRegex = /url\((.*?)\)/i;
+
 				// Replace the first url found with the new url
-				var backgroundImage = $target.css( 'background-image' ).replace( /url\((.*?)\)/i, 'url(' + url + ')' );
+				if ( $target.css( 'background-image' ).match( urlRegex ) ) {
+					backgroundImage = $target.css( 'background-image' ).replace( urlRegex, 'url(' + url + ')' );
+				// Or append the url
+				} else {
+					backgroundImage = $target.css( 'background-image' ).concat( ', url(' + url + ')' );
+				}
 
 				// Change the image src
 				$target.css( 'background-image', backgroundImage );
