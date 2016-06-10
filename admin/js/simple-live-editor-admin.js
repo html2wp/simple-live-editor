@@ -28,6 +28,10 @@
 			var $target = $( '.sle-editable-text[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' ),
 				settings = window.tinyMCEPreInit.mceInit['sle-editor'];
 
+			settings.init_instance_callback = function( editor ) {
+				editor.setContent( $target.html() );
+			}
+
 			settings.setup = function( editor ) {
 				editor.on( 'change input blur keyup paste copy cut delete mouseup', function() {
 
@@ -48,7 +52,6 @@
 			tinyMCE.remove();
 			tb_show( 'Edit Content', '#TB_inline?width=700&height=450&inlineId=sle-editor-modal' );
 			tinyMCE.init( settings );
-			tinyMCE.get( 'sle-editor' ).setContent( $target.html() );
 		});
 
 		/**
