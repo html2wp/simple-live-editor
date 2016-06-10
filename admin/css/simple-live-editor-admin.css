@@ -29,7 +29,7 @@
  */
 #TB_window,
 .TB_overlayBG {
-	z-index: 999999999 !important;
+	z-index: 2147483647 !important; /* max int32 z-index */
 }
 
 /**
@@ -73,7 +73,7 @@
 	border-color: transparent;
 	background: #23282D;
 	color: #eee;
-	z-index: 999999999;
+	z-index: 2147483646;
 }
 
 .sle-edit-icon:hover {
