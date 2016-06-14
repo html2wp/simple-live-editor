@@ -513,9 +513,20 @@ class Simple_Live_Editor_Admin {
 		 */
 		if ( isset( $_POST['content']['bgImages'] ) ) {
 
-			// Loop through the JSON of edited background iamges and change the value to document
+			// Loop through the JSON of edited background images and change the value to document
 			foreach ( $_POST['content']['bgImages'] as $index => $background_image ) {
 				$this->dom->find( "[data-sle-dom-index=$index]" )->attr( 'style', $this->purifier->purify( stripslashes( $background_image ) ) );
+			}
+		}
+
+		/**
+		 * Save the background videos
+		 */
+		if ( isset( $_POST['content']['bgVideos'] ) ) {
+
+			// Loop through the JSON of edited background videos and change the value to document
+			foreach ( $_POST['content']['bgVideos'] as $index => $background_video ) {
+				$this->dom->find( "[data-sle-dom-index=$index]" )->attr( 'data-video-urls', esc_url( $background_video ) );
 			}
 		}
 

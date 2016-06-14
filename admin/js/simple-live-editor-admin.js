@@ -4,13 +4,15 @@
 	$(function() {
 
 		// An object holding the lists of edited contents
-		var content;
+		var content,
+			cssUrlRegex = /url\((.*?)\)/i;
 
 		function resetContentObject() {
 			content = {
 				texts: {},
 				images: {},
 				bgImages: {},
+				bgVideos: {},
 				links: {},
 				sections: {},
 				newSections: {},
@@ -110,16 +112,8 @@
 
 			openFileFrame( function( url ) {
 
-				var backgroundImage,
-					urlRegex = /url\((.*?)\)/i;
-
 				// Replace the first url found with the new url
-				if ( $target.css( 'background-image' ).match( urlRegex ) ) {
-					backgroundImage = $target.css( 'background-image' ).replace( urlRegex, 'url(' + url + ')' );
-				// Or append the url
-				} else {
-					backgroundImage = $target.css( 'background-image' ).concat( ', url(' + url + ')' );
-				}
+				var backgroundImage = $target.css( 'background-image' ).replace( cssUrlRegex, 'url(' + url + ')' );
 
 				// Change the image src
 				$target.css( 'background-image', backgroundImage );
@@ -131,7 +125,27 @@
 				parent.wp.customize.state( 'saved' ).set( false );
 
 			});
+		 });
 
+		/**
+		 * Background video editing
+		 */
+		$( 'body' ).on( 'click', '.sle-edit-bg-video', function( event ) {
+
+			var $target = $( '.sle-editable-bg-video[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
+
+			openFileFrame( function( url ) {
+
+				// Change the video url
+				$target.attr( 'data-video-urls', url );
+
+				// Add to list of changes
+				content.bgVideos[ $target.data( 'sle-dom-index' ) ] = url;
+
+				// Trigger unsaved state
+				parent.wp.customize.state( 'saved' ).set( false );
+
+			});
 		 });
 
 		/**
@@ -205,10 +219,15 @@
 
 			$( element ).find( '[data-sle-dom-index]' ).each( function( index ) {
 
-				if ( $( this ).css( 'background-image' ) !== 'none' ) {
+				if ( $( this ).css( 'background-image' ).match( cssUrlRegex ) ) {
 					$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--pen sle-edit-bg-image" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
 					$( this ).addClass( 'sle-editable-bg-image' );
 				}
+			});
+
+			$( element ).find( '[data-sle-dom-index][data-video-urls]' ).each( function( index ) {
+				$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--pen sle-edit-bg-video" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
+				$( this ).addClass( 'sle-editable-bg-video' );
 			});
 
 			/**
