@@ -52,7 +52,7 @@
 			settings.height = '300';
 
 			tinyMCE.remove();
-			tb_show( 'Edit Content', '#TB_inline?width=700&height=450&inlineId=sle-editor-modal' );
+			$( '#sle-editor-modal' ).remodal();
 			tinyMCE.init( settings );
 		});
 
@@ -64,7 +64,7 @@
 			var $target = $( '.sle-editable-link[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
 
 			$( '.sle-link-editor' ).val( $target.attr( 'href' ) );
-			tb_show( 'Edit Link', '#TB_inline?width=700&height=450&inlineId=sle-link-modal' );
+			$( '#sle-link-modal' ).remodal();
 
 			$( '.sle-link-editor' ).off( 'change input blur keyup paste copy cut delete mouseup' );
 

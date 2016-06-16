@@ -20,6 +20,7 @@
     "management"
   ],
   "dependencies": {
+    "remodal": "^1.0.7",
     "sortablejs": "git://github.com/RubaXa/Sortable"
   },
   "devDependencies": {}

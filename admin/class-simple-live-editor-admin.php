@@ -98,8 +98,12 @@ class Simple_Live_Editor_Admin {
 
 		if ( isset( $wp_customize ) ) {
 
+			// remodal.js
+			wp_enqueue_style( 'remodal', Helpers::get_dir_url( __FILE__ ) . '../node_modules/remodal/dist/remodal.css' );
+			wp_enqueue_style( 'remodal-theme', Helpers::get_dir_url( __FILE__ ) . '../node_modules/remodal/dist/remodal-default-theme.css', array( 'remodal' ) );
+
 			// The plugin stylesheet
-			wp_enqueue_style( $this->plugin_name, Helpers::get_dir_url( __FILE__ ) . 'css/simple-live-editor-admin.css', array( 'dashicons' ), $this->version, 'all' );
+			wp_enqueue_style( $this->plugin_name, Helpers::get_dir_url( __FILE__ ) . 'css/simple-live-editor-admin.css', array( 'dashicons', 'remodal', 'remodal-theme' ), $this->version, 'all' );
 		}
 	}
 
@@ -118,17 +122,17 @@ class Simple_Live_Editor_Admin {
 
 		if ( isset( $wp_customize ) ) {
 
-			// Thicbox
-			add_thickbox();
-
 			// TinyMCE
 			wp_enqueue_script( 'editor' );
+
+			// remodal.js
+			wp_enqueue_script( 'remodal', Helpers::get_dir_url( __FILE__ ) . '../node_modules/remodal/dist/remodal.js' );
 
 			// Sortable.js
 			wp_enqueue_script( 'sortable', Helpers::get_dir_url( __FILE__ ) . '../node_modules/sortablejs/Sortable.js' );
 
 			// The plugin javascript
-			wp_enqueue_script( $this->plugin_name, Helpers::get_dir_url( __FILE__ ) . 'js/simple-live-editor-admin.js', array( 'jquery', 'thickbox', 'editor', 'sortable' ), $this->version, false );
+			wp_enqueue_script( $this->plugin_name, Helpers::get_dir_url( __FILE__ ) . 'js/simple-live-editor-admin.js', array( 'jquery', 'remodal', 'editor', 'sortable' ), $this->version, false );
 
 			/**
 			 * Pass settings to javascript
