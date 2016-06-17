@@ -25,6 +25,9 @@
 		/**
 		 * Text editing
 		 */
+		
+		var editorModal = $( '[data-remodal-id=sle-editor-modal]' ).remodal();
+
 		$( 'body' ).on( 'click', '.sle-edit-text', function( event ) {
 
 			var $target = $( '.sle-editable-text[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' ),
@@ -52,21 +55,27 @@
 			settings.height = '300';
 
 			tinyMCE.remove();
-			$( '#sle-editor-modal' ).remodal();
+			editorModal.open();
 			tinyMCE.init( settings );
+		});
+
+		$( document ).on( 'closed', '[data-remodal-id=sle-editor-modal]', function (e) {
+			tinyMCE.remove();
 		});
 
 		/**
 		 * Link editing
 		 */
+		
+		var linkModal = $( '[data-remodal-id=sle-link-modal]' ).remodal();
+
 		$( 'body' ).on( 'click', '.sle-edit-link', function( event ) {
 
 			var $target = $( '.sle-editable-link[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
 
 			$( '.sle-link-editor' ).val( $target.attr( 'href' ) );
-			$( '#sle-link-modal' ).remodal();
 
-			$( '.sle-link-editor' ).off( 'change input blur keyup paste copy cut delete mouseup' );
+			linkModal.open();
 
 			$( '.sle-link-editor' ).on( 'change input blur keyup paste copy cut delete mouseup', function() {
 
@@ -81,10 +90,14 @@
 			});
 		});
 
+		$( document ).on( 'closed', '[data-remodal-id=sle-link-modal]', function (e) {
+			$( '.sle-link-editor' ).off( 'change input blur keyup paste copy cut delete mouseup' );
+		});
+
 		/**
 		 * Image editing
 		 */
-		$( 'body' ).on( 'click', '.sle-edit-image', function( event ) {
+		$( document ).on( 'click', '.sle-edit-image', function( event ) {
 
 			var $target = $( '.sle-editable-image[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
 
@@ -106,7 +119,7 @@
 		/**
 		 * Background image editing
 		 */
-		$( 'body' ).on( 'click', '.sle-edit-bg-image', function( event ) {
+		$( document ).on( 'click', '.sle-edit-bg-image', function( event ) {
 
 			var $target = $( '.sle-editable-bg-image[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
 
@@ -130,7 +143,7 @@
 		/**
 		 * Background video editing
 		 */
-		$( 'body' ).on( 'click', '.sle-edit-bg-video', function( event ) {
+		$( document ).on( 'click', '.sle-edit-bg-video', function( event ) {
 
 			var $target = $( '.sle-editable-bg-video[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
 
@@ -253,11 +266,11 @@
 		 * Hover effects for the edit icons
 		 */
 		
-		$( 'body' ).on( 'mouseover', '[class^="sle-editable-"], [class*=" sle-editable-"]', function( event ) {
+		$( document ).on( 'mouseover', '[class^="sle-editable-"], [class*=" sle-editable-"]', function( event ) {
 			$( '.sle-edit-icon[data-sle-target=' + $( this ).data( 'sle-dom-index' ) + ']' ).show();
 		});
 
-		$( 'body' ).on( 'mouseout', '[class^="sle-editable-"], [class*=" sle-editable-"]', function( event ) {
+		$( document ).on( 'mouseout', '[class^="sle-editable-"], [class*=" sle-editable-"]', function( event ) {
 			var $target = $( '.sle-edit-icon[data-sle-target=' + $( this ).data( 'sle-dom-index' ) + ']' );
 
 			if ( ! $( event.relatedTarget ).is( '.sle-edit-icon[data-sle-target=' + $( this ).data( 'sle-dom-index' ) + ']' )
@@ -266,11 +279,11 @@
 			}
 		});
 
-		$( 'body' ).on( 'mouseover', '.sle-edit-icon', function( event ) {
+		$( document ).on( 'mouseover', '.sle-edit-icon', function( event ) {
 			$( '[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' ).addClass( 'sle-hover' );
 		});
 
-		$( 'body' ).on( 'mouseout', '.sle-edit-icon', function( event ) {
+		$( document ).on( 'mouseout', '.sle-edit-icon', function( event ) {
 
 			$( '[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' ).removeClass( 'sle-hover' );
 

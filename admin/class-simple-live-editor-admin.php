@@ -296,7 +296,8 @@ class Simple_Live_Editor_Admin {
 				'media_buttons' => false,
 			);
 
-			echo '<div id="sle-editor-modal" class="sle-modal">';
+			echo '<div class="sle-modal" data-remodal-id="sle-editor-modal">';
+			echo '<button data-remodal-action="close" class="remodal-close"></button>';
 			wp_editor( '', 'sle-editor', $settings );
 			echo '</div>';
 		}
@@ -311,7 +312,10 @@ class Simple_Live_Editor_Admin {
 		global $wp_customize;
 
 		if ( isset( $wp_customize ) ) {
-			echo '<div id="sle-link-modal" class="sle-modal"><input type="text" class="sle-input sle-link-editor"></div>';
+			echo '<div class="sle-modal" data-remodal-id="sle-link-modal">';
+			echo '<button data-remodal-action="close" class="remodal-close"></button>';
+			echo '<input type="text" class="sle-input sle-link-editor">';
+			echo '</div>';
 		}
 	}
 

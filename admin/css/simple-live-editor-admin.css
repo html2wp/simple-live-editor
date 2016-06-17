@@ -1,8 +1,9 @@
+
 /**
- * Don't display the sle-modal on load
+ * Modals
  */
 .sle-modal {
-	display: none;
+	background-color: #F1F1F1;
 }
 
 /**
@@ -22,21 +23,6 @@
 	outline: 0;
 	-webkit-transition: 50ms border-color ease-in-out;
 	transition: 50ms border-color ease-in-out;
-}
-
-/**
- * Place the thicbox modal on top
- */
-#TB_window,
-.TB_overlayBG {
-	z-index: 2147483647 !important; /* max int32 z-index */
-}
-
-/**
- * Styling for modals
- */
-#TB_window {
-	background-color: #eee !important;
 }
 
 /**
