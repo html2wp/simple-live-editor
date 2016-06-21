@@ -176,7 +176,7 @@ class Simple_Live_Editor_Admin {
 
 				// Create the choices list
 				foreach ( $languages as $language ) {
-					$choices[$language['code']] = $language['translated_name']; 
+					$choices[$language['code']] = $language['translated_name'];
 				}
 
 				$wp_customize->add_setting( 'sle_language_setting', array(
@@ -195,7 +195,7 @@ class Simple_Live_Editor_Admin {
 		/**
 		 * Page selector
 		 */
-		
+
 		// Get the wp pages
 		$pages = get_pages();
 
@@ -206,7 +206,7 @@ class Simple_Live_Editor_Admin {
 
 			// Create the choices list
 			foreach ( $pages as $page ) {
-				$choices[$page->ID] = $page->post_title; 
+				$choices[$page->ID] = $page->post_title;
 			}
 
 			$wp_customize->add_setting( 'sle_page_setting', array(
@@ -276,7 +276,7 @@ class Simple_Live_Editor_Admin {
 				$cta_url = admin_url( 'customize.php?url=' . rawurlencode( get_permalink( $post->ID ) ) );
 			}
 		}
-		
+
 		echo '<div class="notice notice-info sle-notice"><p><span class="dashicons dashicons-edit sle-notice-edit"></span>' . $message . '<a href="' . $cta_url . '" class="btn">' . $cta . '&rarr;</a></p></div>';
 
 	}
@@ -371,7 +371,7 @@ class Simple_Live_Editor_Admin {
 		// Get the start and end part of the path
 		$path_prefix = get_stylesheet_directory() . '/simple-live-editor';
 		$path_suffix = Helpers::replace_first_occurrence( $template, get_stylesheet_directory(), '' );
-		
+
 		// If wpml language defined
 		if ( defined( 'ICL_LANGUAGE_CODE' ) ) {
 			$path_language_part = '/' . ICL_LANGUAGE_CODE;
@@ -593,14 +593,23 @@ class Simple_Live_Editor_Admin {
 			// Mark text nodes parents as editable elements unless, text node empty
 			if ( $element->nodeType === XML_TEXT_NODE && preg_match( '/\S/', $element->nodeValue ) ) {
 
-				// If the parent is not 'Phrasing content or headings or paragraph' and the acutal element has siblings, wrap the element with div
-				/*if ( count( pq( $element )->parent()->not( SLE_PHRASING_CONTENT )->not( SLE_HEADING_CONTENT )->not( 'p' ) ) > 0 && count( pq( $element )->siblings() ) > 0 ) {
-					pq( $element )->wrap( '<div class="sle-wrapper-element"></div>' );
-				}*/
+				$parent = pq( $element )->parent();
+
+				// While the parent is 'Phrasing content or headings or paragraph' and not root element
+				while ( $parent->is( SLE_PHRASING_CONTENT . ', ' . SLE_HEADING_CONTENT . ', p' ) ) {
+
+					if ( $parent->is( 'html, body, .wp-sections, .wp-section' ) ) {
+						break;
+					}
+
+					$parent = $parent->parent();
+				}
 
 				// Mark as editable
-				// TODO: stop at body / sle-section
-				pq( $element )->parent()->parent()->addClass( 'sle-editable-text' );
+				$parent->addClass( 'sle-editable-text' );
+
+				// Remove any editable childs
+				$parent->find( '.sle-editable-text' )->removeClass( 'sle-editable-text' );
 			}
 		}
 
@@ -635,7 +644,7 @@ class Simple_Live_Editor_Admin {
 		/**
 		 * Create our indexing for all HTML elements
 		 */
-		
+
 		// If new key prefix required, create it
 		if ( $key_prefix === true ) {
 			$key_prefix = uniqid();
