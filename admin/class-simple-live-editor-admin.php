@@ -164,64 +164,6 @@ class Simple_Live_Editor_Admin {
 		 ));
 
 		/**
-		 * Language selector
-		 */
-		if ( function_exists( 'icl_get_languages' ) ) {
-
-			$languages = icl_get_languages( 'skip_missing=0&orderby=KEY&order=DIR&link_empty_to=str' );
-
-			if ( $languages ) {
-
-				$choices = array();
-
-				// Create the choices list
-				foreach ( $languages as $language ) {
-					$choices[$language['code']] = $language['translated_name'];
-				}
-
-				$wp_customize->add_setting( 'sle_language_setting', array(
-					'default' => defined( 'ICL_LANGUAGE_CODE' ) ? ICL_LANGUAGE_CODE : '',
-				));
-
-				$wp_customize->add_control( 'sle_language_setting', array(
-					'label'   => 'Language',
-					'section' => 'sle_settings_section',
-					'type'    => 'select',
-					'choices' => $choices,
-				));
-			}
-		}
-
-		/**
-		 * Page selector
-		 */
-
-		// Get the wp pages
-		$pages = get_pages();
-
-		// If we have pages
-		if ( $pages ) {
-
-			$choices = array();
-
-			// Create the choices list
-			foreach ( $pages as $page ) {
-				$choices[$page->ID] = $page->post_title;
-			}
-
-			$wp_customize->add_setting( 'sle_page_setting', array(
-				'default' => 72
-			));
-
-			$wp_customize->add_control( 'sle_page_setting', array(
-				'label'   => 'Page',
-				'section' => 'sle_settings_section',
-				'type'    => 'select',
-				'choices' => $choices,
-			));
-		}
-
-		/**
 		 * Sections
 		 */
 		$files = Helpers::glob_recursive( get_stylesheet_directory() . '/simple-live-editor/sections/*.php' );
