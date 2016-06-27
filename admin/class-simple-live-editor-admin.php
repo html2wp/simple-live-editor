@@ -423,7 +423,13 @@ class Simple_Live_Editor_Admin {
 
 			// Loop through the JSON of edited texts and change the value to document
 			foreach ( $_POST['content']['texts'] as $index => $html ) {
-				$this->dom->find( ".sle-editable-text[data-sle-dom-index=$index]" )->html( $this->purifier->purify( stripslashes( $html ) ) );
+
+				// Find processing instructions
+				// See: http://stackoverflow.com/questions/11532348/strip-php-tags-preg-replace
+				$pattern = '#<\?.*?(\?>|$)#s';
+				$clean_html = preg_replace( $pattern, '', stripslashes( $html ) );
+
+				$this->dom->find( ".sle-editable-text[data-sle-dom-index=$index]" )->html( $clean_html );
 			}
 		}
 
@@ -535,7 +541,7 @@ class Simple_Live_Editor_Admin {
 			// Mark text nodes parents as editable elements unless, text node empty
 			if ( $element->nodeType === XML_TEXT_NODE && preg_match( '/\S/', $element->nodeValue ) ) {
 
-				$parent = pq( $element )->parent();
+				/*$parent = pq( $element )->parent();
 
 				// While the parent is 'Phrasing content or headings or paragraph' and not root element
 				while ( $parent->is( SLE_PHRASING_CONTENT . ', ' . SLE_HEADING_CONTENT . ', p' ) ) {
@@ -551,7 +557,9 @@ class Simple_Live_Editor_Admin {
 				$parent->addClass( 'sle-editable-text' );
 
 				// Remove any editable childs
-				$parent->find( '.sle-editable-text' )->removeClass( 'sle-editable-text' );
+				$parent->find( '.sle-editable-text' )->removeClass( 'sle-editable-text' );*/
+
+				pq( $element )->parent()->parent()->addClass( 'sle-editable-text' );
 			}
 		}
 
