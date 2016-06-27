@@ -6,6 +6,10 @@
 	background-color: #F1F1F1;
 }
 
+.remodal-wrapper {
+	z-index: 2147483647; /* max int32 z-index */
+}
+
 /**
  * Link editing input
  */
