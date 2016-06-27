@@ -25,7 +25,7 @@
 		/**
 		 * Text editing
 		 */
-		
+
 		var editorModal = $( '[data-remodal-id=sle-editor-modal]' ).remodal();
 
 		$( 'body' ).on( 'click', '.sle-edit-text', function( event ) {
@@ -66,7 +66,7 @@
 		/**
 		 * Link editing
 		 */
-		
+
 		var linkModal = $( '[data-remodal-id=sle-link-modal]' ).remodal();
 
 		$( 'body' ).on( 'click', '.sle-edit-link', function( event ) {
@@ -132,7 +132,7 @@
 				$target.css( 'background-image', backgroundImage );
 
 				// Add to list of changes
-				content.bgImages[ $target.data( 'sle-dom-index' ) ] = $target.attr( 'style' );
+				content.bgImages[ $target.data( 'sle-dom-index' ) ] = backgroundImage;
 
 				// Trigger unsaved state
 				parent.wp.customize.state( 'saved' ).set( false );
@@ -265,7 +265,7 @@
 		/**
 		 * Hover effects for the edit icons
 		 */
-		
+
 		$( document ).on( 'mouseover', '[class^="sle-editable-"], [class*=" sle-editable-"]', function( event ) {
 			$( '.sle-edit-icon[data-sle-target=' + $( this ).data( 'sle-dom-index' ) + ']' ).show();
 		});
@@ -318,7 +318,7 @@
 		/**
 		 * Sections
 		 */
-		
+
 		function saveSectionOrder( event ) {
 
 			var indexes = [];
@@ -404,9 +404,9 @@
 		/**
 		 * Save data
 		 */
-		
+
 		var customize = parent.wp.customize;
-		
+
 		// Bind to the customize view saved event
 		customize.bind( 'saved', function() {
 
@@ -428,7 +428,7 @@
 				customize.previewer.refresh();
 			});
 		});
-	
+
 	});
 
 })( jQuery );

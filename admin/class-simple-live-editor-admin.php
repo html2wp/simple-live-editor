@@ -471,7 +471,15 @@ class Simple_Live_Editor_Admin {
 
 			// Loop through the JSON of edited background images and change the value to document
 			foreach ( $_POST['content']['bgImages'] as $index => $background_image ) {
-				$this->dom->find( "[data-sle-dom-index=$index]" )->attr( 'style', $this->purifier->purify( stripslashes( $background_image ) ) );
+
+				$style = $this->dom->find( "[data-sle-dom-index=$index]" )->attr( 'style' );
+
+				if ( ! empty( $style ) ) {
+					$style .= '; ';
+				}
+
+				$style .= 'background-image: ' . $this->purifier->purify( stripslashes( $background_image ) );
+				$this->dom->find( "[data-sle-dom-index=$index]" )->attr( 'style', $style );
 			}
 		}
 
