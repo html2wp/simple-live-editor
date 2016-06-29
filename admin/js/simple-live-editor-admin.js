@@ -53,6 +53,8 @@
 
 			settings.forced_root_block = false;
 			settings.height = '300';
+			settings.valid_elments = '*[*]';
+			settings.valid_children = '+a[h1|h2|h3|h4|h5|h6]';
 
 			tinyMCE.remove();
 			editorModal.open();
