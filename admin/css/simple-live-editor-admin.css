@@ -6,8 +6,13 @@
 	background-color: #F1F1F1;
 }
 
+/* Place the modal and tinymce modals on top */
 .remodal-wrapper {
 	z-index: 2147483647; /* max int32 z-index */
+}
+
+.mce-panel, #wp-link-wrap {
+	z-index: 2147483647 !important; /* max int32 z-index */
 }
 
 /**
