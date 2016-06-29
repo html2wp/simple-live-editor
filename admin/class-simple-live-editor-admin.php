@@ -534,15 +534,10 @@ class Simple_Live_Editor_Admin {
 		/**
 		 * Find all text nodes and mark their parents as editable elements
 		 */
-		foreach ( $dom->find( '*:not(php)' )->contents() as $key => $element ) {
+		foreach ( $dom->find( '*:not(php, .sle-not-editable)' )->contents() as $key => $element ) {
 
 			// Don't do anything if parent already an editable field
-			if ( count( pq( $element )->parents( '.sle-editable-text' ) ) > 0 ) {
-				continue;
-			}
-
-			// Don't do anything if any of the siblings are php tags
-			if ( count( pq( $element )->siblings( 'php' ) ) > 0 ) {
+			if ( count( pq( $element )->parents( '.sle-editable-text, .sle-not-editable' ) ) > 0 ) {
 				continue;
 			}
 
@@ -567,6 +562,11 @@ class Simple_Live_Editor_Admin {
 				// Remove any editable childs
 				$parent->find( '.sle-editable-text' )->removeClass( 'sle-editable-text' );*/
 
+				// Don't do anything if any of the children are php tags
+				if ( count( pq( $element )->parent()->parent()->find( 'php' ) ) > 0 ) {
+					continue;
+				}
+
 				pq( $element )->parent()->parent()->addClass( 'sle-editable-text' );
 			}
 		}
@@ -574,10 +574,10 @@ class Simple_Live_Editor_Admin {
 		/**
 		 * Find all images and mark them as editable elements
 		 */
-		foreach ( $dom->find( 'img' ) as $key => $element ) {
+		foreach ( $dom->find( 'img:not(.sle-not-editable)' ) as $key => $element ) {
 
 			// Don't do anything if parent already an editable field
-			if ( count( pq( $element )->parents( '.sle-editable-text' ) ) > 0 ) {
+			if ( count( pq( $element )->parents( '.sle-editable-text, .sle-not-editable' ) ) > 0 ) {
 				continue;
 			}
 
@@ -588,10 +588,10 @@ class Simple_Live_Editor_Admin {
 		/**
 		 * Find all links and mark them as editable elements
 		 */
-		foreach ( $dom->find( 'a:not(.sle-editable-text)' ) as $key => $element ) {
+		foreach ( $dom->find( 'a:not(.sle-editable-text, .sle-not-editable)' ) as $key => $element ) {
 
 			// Don't do anything if parent already an editable field
-			if ( count( pq( $element )->parents( '.sle-editable-text' ) ) > 0 ) {
+			if ( count( pq( $element )->parents( '.sle-editable-text, .sle-not-editable' ) ) > 0 ) {
 				continue;
 			}
 
@@ -609,10 +609,10 @@ class Simple_Live_Editor_Admin {
 			$dom->find( '*:not(php)' )->eq( 0 )->attr( 'data-sle-dom-index-prefix', $key_prefix );
 		}
 
-		foreach ( $dom->find( '*:not(php)' ) as $key => $element ) {
+		foreach ( $dom->find( '*:not(php, .sle-not-editable)' ) as $key => $element ) {
 
 			// Don't do anything if parent already an editable field
-			if ( count( pq( $element )->parents( '.sle-editable-text' ) ) > 0 ) {
+			if ( count( pq( $element )->parents( '.sle-editable-text, .sle-not-editable' ) ) > 0 ) {
 				continue;
 			}
 
