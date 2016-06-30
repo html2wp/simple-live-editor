@@ -196,6 +196,11 @@ class Simple_Live_Editor {
 		$this->loader->add_action( 'wp_ajax_sle_get_content', $this->plugin_admin, 'get_content' );
 		$this->loader->add_action( 'wp_ajax_sle_save_content', $this->plugin_admin, 'save_content' );
 
+		/**
+		 * Duplicate an existing template when translated
+		 */
+		$this->loader->add_action( 'save_post', $this->plugin_admin, 'duplicate_template_on_translation', 999 );
+
 	}
 
 	/**
@@ -221,14 +226,14 @@ class Simple_Live_Editor {
 				$post = get_post( $_GET['post'] );
 				$typenow = $post->post_type;
 			}
-		}	
+		}
 
 		// Show the SLE notification only for add new page and edit existing page
 		if ( ( $pagenow === 'post.php' || $pagenow === 'post-new.php') && $typenow === 'page' ) {
 			$this->loader->add_action( 'admin_enqueue_scripts', $this->plugin_admin, 'enqueue_sle_notice_styles' );
 			$this->loader->add_action( 'admin_notices', $this->plugin_admin, 'show_sle_notice' );
 		}
-	}	
+	}
 
 	/**
 	 * Define contants used by the plugin

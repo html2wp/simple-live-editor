@@ -154,6 +154,86 @@ class Simple_Live_Editor_Admin {
 		}
 	}
 
+	function duplicate_template_on_translation( $post_id ) {
+
+		global $post;
+
+		// Check if wpml available
+		if ( ! function_exists( 'icl_object_id' ) ) {
+			return $post_id;
+		}
+
+		// Don't do anything for autosave
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return $post_id;
+		}
+
+		$status = get_post_status( $post_id );
+
+		// Don't do anything for unsaved post or revision
+		if ( 'auto-draft' === $status || 'inherit' === $status ) {
+			return $post_id;
+		}
+
+		// Don't do anything if not a page
+		if ( ! is_object( $post ) || 'page' !== $post->post_type ) {
+			return $post_id;
+		}
+
+		$default_language = apply_filters( 'wpml_default_language', NULL );
+
+		// Don't do anything if already default language
+		if ( ! defined( 'ICL_LANGUAGE_CODE' ) || ICL_LANGUAGE_CODE === $default_language ) {
+			return $post_id;
+		}
+
+		// Try to get the default language version of the page
+		$original_page_id = apply_filters( 'wpml_object_id', $post_id, 'page', false, $default_language );
+
+		// Don't do anything if no original found
+		if ( empty( $original_page_id ) ) {
+			return $post_id;
+		}
+
+		// Get the template name
+		$page_template = get_page_template_slug( $post_id );
+
+		// get_page_template_slug returns empty if default template in use
+		if ( empty( $page_template ) ) {
+			$page_template = 'index.php';
+		}
+
+		// Get the parts of the template path
+		$path_prefix = get_stylesheet_directory() . '/simple-live-editor';
+		$path_suffix = '/' . $page_template;
+		$path_language_part = '/' . $default_language;
+		$path_id_part = '/page-' . $original_page_id;
+		$original_page_template = $path_prefix . $path_language_part . $path_id_part . $path_suffix;
+
+		// Don't do anything if no original template found
+		if ( ! file_exists( $original_page_template ) ) {
+			return $post_id;
+		}
+
+		$path_language_part = '/' . ICL_LANGUAGE_CODE;
+		$path_id_part = '/page-' . $post_id;
+		$new_page_template = $path_prefix . $path_language_part . $path_id_part . $path_suffix;
+
+		// Don't do anything if new template already exists
+		if ( file_exists( $new_page_template ) ) {
+			return $post_id;
+		}
+
+		// Create the folders
+		$dir = dirname( $new_page_template );
+		if ( ! is_dir( $dir ) ) {
+			mkdir( $dir, 0764, true );
+		}
+
+		// Copy the default language template to be used for the translation
+		copy( $original_page_template, $new_page_template );
+	}
+
 	public function add_customize_controls( $wp_customize ) {
 
 		/**
