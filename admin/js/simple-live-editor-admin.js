@@ -53,8 +53,11 @@
 
 			settings.forced_root_block = false;
 			settings.height = '300';
+			settings.allow_html_in_named_anchor = true;
 			settings.valid_elments = '*[*]';
-			settings.valid_children = '+a[h1|h2|h3|h4|h5|h6]';
+			settings.extended_valid_elements = '*[*]';
+			settings.valid_children = '+a[h1|h2|h3|h4|h5|h6|i|#text]';
+			// Empty Span elements should have zero-width space (&#8203;) 
 
 			tinyMCE.remove();
 			editorModal.open();
