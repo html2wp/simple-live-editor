@@ -756,7 +756,7 @@ class Simple_Live_Editor_Admin {
 		 * Save the content in Wordpress Page content
 		 */
 		$content = "";
-		foreach ( $this->dom->find('section') as $el ) {
+		foreach ( $this->dom->find('.wp-content') as $el ) {
 			$content .= pq($el)->htmlOuter();
 		}
 
