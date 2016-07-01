@@ -751,6 +751,23 @@ class Simple_Live_Editor_Admin {
 		 * Save the document to template
 		 */
 		file_put_contents( $path, $this->dom->php() );
+		
+		/**
+		 * Save the content in Wordpress Page content
+		 */
+		$content = "";
+		foreach ( $this->dom->find('section') as $el ) {
+			$content .= pq($el)->htmlOuter();
+		}
+
+		// Update the content of the page
+		$page = array(
+		  'ID'           => $id,
+		  'post_content' => $content
+		);
+
+		// Update the post into the database
+		wp_update_post( $page );		
 
 	}
 }
