@@ -757,7 +757,7 @@ class Simple_Live_Editor_Admin {
 		 */
 		$content = "";
 		foreach ( $this->dom->find('.wp-content') as $el ) {
-			$content .= pq($el)->htmlOuter();
+			$content .= pq($el)->html();
 		}
 
 		// Update the content of the page
