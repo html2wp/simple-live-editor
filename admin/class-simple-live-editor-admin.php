@@ -141,9 +141,10 @@ class Simple_Live_Editor_Admin {
 			global $post;
 
 			$sle_settings = array(
-				'ajax_url'      => admin_url( 'admin-ajax.php' ),
-				'page_template' => get_page_template(),
-				'page_id'       => $post->ID,
+				'ajax_url'          => admin_url( 'admin-ajax.php' ),
+				'page_template'     => get_page_template(),
+				'page_id'           => $post->ID,
+				'editable_elements' => SLE_EDITABLE_ELEMENTS,
 			);
 
 			if ( defined( 'ICL_LANGUAGE_CODE' ) ) {
@@ -320,6 +321,7 @@ class Simple_Live_Editor_Admin {
 
 			echo '<div class="sle-modal" data-remodal-id="sle-editor-modal">';
 			echo '<button data-remodal-action="close" class="remodal-close"></button>';
+			set_user_setting ( 'editor', 'tinymce' );
 			wp_editor( '', 'sle-editor', $settings );
 			echo '</div>';
 		}
@@ -627,7 +629,7 @@ class Simple_Live_Editor_Admin {
 				$parent = pq( $element )->parent();
 
 				// While the parent is 'Phrasing content or headings or paragraph' and not root element
-				while ( $parent->is( SLE_PHRASING_CONTENT . ', ' . SLE_HEADING_CONTENT . ', p' ) ) {
+				while ( $parent->is( SLE_EDITABLE_ELEMENTS ) ) {
 
 					if ( $parent->is( 'html, body, .wp-sections, .wp-section' ) ) {
 						break;

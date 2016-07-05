@@ -243,10 +243,11 @@ class Simple_Live_Editor {
 	 */
 	private function define_constants() {
 
-		define( 'SLE_PHRASING_CONTENT', 'a, abbr, map area, audio, b, bdi, bdo, br, button, canvas, cite, code, data, datalist, del, dfn, em, embed, i, iframe, img, input, ins, kbd, keygen, label, map, mark, math, meter, noscript, object, output, progress, q, ruby, s, samp, script, select, small, span, strong, sub, sup, svg, template, textarea, time, u, var, video, wbr, text' );
+		define( 'SLE_PHRASING_CONTENT', 'a, abbr, map, area, audio, b, bdi, bdo, br, button, canvas, cite, code, data, datalist, del, dfn, em, embed, i, iframe, img, input, ins, kbd, keygen, label, map, mark, math, meter, noscript, object, output, progress, q, ruby, s, samp, script, select, small, span, strong, sub, sup, svg, template, textarea, time, u, var, video, wbr, text' );
 
 		define( 'SLE_HEADING_CONTENT', 'h1, h2, h3, h4, h5, h6' );
 
+		define( 'SLE_EDITABLE_ELEMENTS', SLE_PHRASING_CONTENT . ', ' . SLE_HEADING_CONTENT . ', p, ul, ol, li' );
 	}
 
 	/**

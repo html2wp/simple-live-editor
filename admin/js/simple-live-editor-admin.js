@@ -26,7 +26,12 @@
 		 * Text editing
 		 */
 
-		var editorModal = $( '[data-remodal-id=sle-editor-modal]' ).remodal();
+		var editorModal = $( '[data-remodal-id=sle-editor-modal]' ).remodal(),
+			extended_valid_elements = sleSettings.editable_elements.split( ', ' );
+
+		extended_valid_elements = $.map( extended_valid_elements, function( value ) {
+			return '+' + value + '[*]';
+		}).join( ',' );
 
 		$( 'body' ).on( 'click', '.sle-edit-text', function( event ) {
 
@@ -55,10 +60,10 @@
 			settings.height = '300';
 			settings.allow_html_in_named_anchor = true;
 			settings.valid_elments = '*[*]';
-			settings.extended_valid_elements = '+span[*]';
+			settings.extended_valid_elements = extended_valid_elements;
 			settings.valid_children = '+a[h1|h2|h3|h4|h5|h6|i|#text]';
 
-			setUserSetting('editor', 'tinymce');
+			setUserSetting( 'editor', 'tinymce' );
 			tinyMCE.remove();
 			editorModal.open();
 			tinyMCE.init( settings );
