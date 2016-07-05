@@ -629,17 +629,17 @@ class Simple_Live_Editor_Admin {
 				$parent = pq( $element )->parent();
 
 				// While the parent is 'Phrasing content or headings or paragraph' and not root element
-				while ( $parent->is( SLE_EDITABLE_ELEMENTS ) ) {
+				while ( $parent->is( SLE_EDITABLE_ELEMENTS ) || ( count( $parent->siblings() ) > 0 && count( $parent->siblings() ) === count( $parent->siblings( '.sle-editable-text' ) ) ) ) {
 
 					if ( $parent->is( 'html, body, .wp-sections, .wp-section' ) ) {
 						break;
 					}
 
-					if ( count( $parent->find( 'php' ) ) > 0 ) {
+					if ( count( $parent->parent()->find( 'php' ) ) > 0 ) {
 						break;
+					} else {
+						$parent = $parent->parent();
 					}
-
-					$parent = $parent->parent();
 				}
 
 				// Mark as editable
