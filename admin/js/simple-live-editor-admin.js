@@ -55,9 +55,10 @@
 			settings.height = '300';
 			settings.allow_html_in_named_anchor = true;
 			settings.valid_elments = '*[*]';
-			settings.extended_valid_elements = '+span';			
+			settings.extended_valid_elements = '+span';
 			settings.valid_children = '+a[h1|h2|h3|h4|h5|h6|i|#text]';
 
+			setUserSetting('editor', 'tinymce');
 			tinyMCE.remove();
 			editorModal.open();
 			tinyMCE.init( settings );
