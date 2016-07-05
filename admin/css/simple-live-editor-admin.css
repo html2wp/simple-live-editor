@@ -76,18 +76,26 @@
 	display: block;
 }
 
-.sle-edit-icon--pen:before {
-	content: "\f464";
+.sle-edit-icon:before {
 	font: 400 20px/1 dashicons;
 	position: relative;
 	top: 2px;
 }
 
+.sle-edit-icon--pen:before {
+	content: "\f464";
+}
+
 .sle-edit-icon--link:before {
 	content: "\f103";
-	font: 400 20px/1 dashicons;
-	position: relative;
-	top: 2px;
+}
+
+.sle-edit-icon--picture:before {
+	content: "\f128";
+}
+
+.sle-edit-icon--video:before {
+	content: "\f236";
 }
 
 /**

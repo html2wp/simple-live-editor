@@ -229,7 +229,7 @@
 
 			// Wrap the editable images to display the edit icon
 			$( element ).find( '.sle-editable-image' ).each( function( index ) {
-				$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--pen sle-edit-image" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
+				$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--picture sle-edit-image" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
 			});
 
 			$( element ).find( '.sle-editable-text' ).each( function( index ) {
@@ -243,13 +243,13 @@
 			$( element ).find( '[data-sle-dom-index]' ).each( function( index ) {
 
 				if ( $( this ).css( 'background-image' ).match( cssUrlRegex ) ) {
-					$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--pen sle-edit-bg-image" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
+					$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--picture sle-edit-bg-image" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
 					$( this ).addClass( 'sle-editable-bg-image' );
 				}
 			});
 
 			$( element ).find( '[data-sle-dom-index][data-video-urls]' ).each( function( index ) {
-				$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--pen sle-edit-bg-video" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
+				$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--video sle-edit-bg-video" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
 				$( this ).addClass( 'sle-editable-bg-video' );
 			});
 
