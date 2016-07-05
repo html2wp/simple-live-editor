@@ -624,12 +624,16 @@ class Simple_Live_Editor_Admin {
 			// Mark text nodes parents as editable elements unless, text node empty
 			if ( $element->nodeType === XML_TEXT_NODE && preg_match( '/\S/', $element->nodeValue ) ) {
 
-				/*$parent = pq( $element )->parent();
+				$parent = pq( $element )->parent();
 
 				// While the parent is 'Phrasing content or headings or paragraph' and not root element
 				while ( $parent->is( SLE_PHRASING_CONTENT . ', ' . SLE_HEADING_CONTENT . ', p' ) ) {
 
 					if ( $parent->is( 'html, body, .wp-sections, .wp-section' ) ) {
+						break;
+					}
+
+					if ( count( $parent->find( 'php' ) ) > 0 ) {
 						break;
 					}
 
@@ -640,14 +644,7 @@ class Simple_Live_Editor_Admin {
 				$parent->addClass( 'sle-editable-text' );
 
 				// Remove any editable childs
-				$parent->find( '.sle-editable-text' )->removeClass( 'sle-editable-text' );*/
-
-				// Don't do anything if any of the children are php tags
-				if ( count( pq( $element )->parent()->parent()->find( 'php' ) ) > 0 ) {
-					continue;
-				}
-
-				pq( $element )->parent()->parent()->addClass( 'sle-editable-text' );
+				$parent->find( '.sle-editable-text' )->removeClass( 'sle-editable-text' );
 			}
 		}
 
