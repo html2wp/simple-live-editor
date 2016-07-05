@@ -61,7 +61,7 @@
 	font-size: 21px;
 	line-height: 31px;
 	text-align: center;
-	text-decoration: none;
+	text-decoration: none !important;
 	vertical-align: top;
 	overflow: hidden;
 	transition: none;
