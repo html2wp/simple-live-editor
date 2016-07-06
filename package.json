@@ -1,6 +1,6 @@
 {
   "name": "simple-live-editor",
-  "version": "1.0.1",
+  "version": "2.0",
   "description": "Simple live editor for WordPress",
   "main": "simple-live-editor.php",
   "author": "Harri Heljala <harri@htmltowordpress.io>",
