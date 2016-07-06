@@ -26,12 +26,24 @@
 		 * Text editing
 		 */
 
-		var editorModal = $( '[data-remodal-id=sle-editor-modal]' ).remodal();
+		var editorModal = $( '[data-remodal-id=sle-editor-modal]' ).remodal(),
+			extended_valid_elements = sleSettings.editable_elements.split( ', ' ),
+			settings = window.tinyMCEPreInit.mceInit['sle-editor'];
+
+		extended_valid_elements = $.map( extended_valid_elements, function( value ) {
+			return '+' + value + '[*]';
+		}).join( ',' );
+
+		settings.forced_root_block = false;
+		settings.height = '300';
+		settings.allow_html_in_named_anchor = true;
+		settings.valid_elments = '*[*]';
+		settings.extended_valid_elements = extended_valid_elements;
+		settings.valid_children = '+a[h1|h2|h3|h4|h5|h6|i|#text]';
 
 		$( 'body' ).on( 'click', '.sle-edit-text', function( event ) {
 
-			var $target = $( '.sle-editable-text[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' ),
-				settings = window.tinyMCEPreInit.mceInit['sle-editor'];
+			var $target = $( '.sle-editable-text[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
 
 			settings.init_instance_callback = function( editor ) {
 				editor.setContent( $target.html() );
@@ -51,13 +63,7 @@
 				});
 			};
 
-			settings.forced_root_block = false;
-			settings.height = '300';
-			settings.allow_html_in_named_anchor = true;
-			settings.valid_elments = '*[*]';
-			settings.extended_valid_elements = '+span';			
-			settings.valid_children = '+a[h1|h2|h3|h4|h5|h6|i|#text]';
-
+			setUserSetting( 'editor', 'tinymce' );
 			tinyMCE.remove();
 			editorModal.open();
 			tinyMCE.init( settings );
@@ -223,7 +229,7 @@
 
 			// Wrap the editable images to display the edit icon
 			$( element ).find( '.sle-editable-image' ).each( function( index ) {
-				$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--pen sle-edit-image" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
+				$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--picture sle-edit-image" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
 			});
 
 			$( element ).find( '.sle-editable-text' ).each( function( index ) {
@@ -237,13 +243,13 @@
 			$( element ).find( '[data-sle-dom-index]' ).each( function( index ) {
 
 				if ( $( this ).css( 'background-image' ).match( cssUrlRegex ) ) {
-					$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--pen sle-edit-bg-image" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
+					$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--picture sle-edit-bg-image" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
 					$( this ).addClass( 'sle-editable-bg-image' );
 				}
 			});
 
 			$( element ).find( '[data-sle-dom-index][data-video-urls]' ).each( function( index ) {
-				$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--pen sle-edit-bg-video" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
+				$( 'body' ).append( '<a href="javascript:;" class="sle-edit-icon sle-edit-icon--video sle-edit-bg-video" data-sle-target="' + $( this ).data( 'sle-dom-index' ) + '"></a>' );
 				$( this ).addClass( 'sle-editable-bg-video' );
 			});
 

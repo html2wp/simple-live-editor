@@ -141,9 +141,10 @@ class Simple_Live_Editor_Admin {
 			global $post;
 
 			$sle_settings = array(
-				'ajax_url'      => admin_url( 'admin-ajax.php' ),
-				'page_template' => get_page_template(),
-				'page_id'       => $post->ID,
+				'ajax_url'          => admin_url( 'admin-ajax.php' ),
+				'page_template'     => get_page_template(),
+				'page_id'           => $post->ID,
+				'editable_elements' => SLE_EDITABLE_ELEMENTS,
 			);
 
 			if ( defined( 'ICL_LANGUAGE_CODE' ) ) {
@@ -154,6 +155,11 @@ class Simple_Live_Editor_Admin {
 		}
 	}
 
+	/**
+	 * Duplicate the template when a second language translation is added for a default language version of a page
+	 *
+	 * @since    2.0.0
+	 */
 	function duplicate_template_on_translation( $post_id ) {
 
 		global $post;
@@ -234,6 +240,11 @@ class Simple_Live_Editor_Admin {
 		copy( $original_page_template, $new_page_template );
 	}
 
+	/**
+	 * Add the customizer menu items
+	 *
+	 * @since    2.0.0
+	 */
 	public function add_customize_controls( $wp_customize ) {
 
 		/**
@@ -303,6 +314,11 @@ class Simple_Live_Editor_Admin {
 
 	}
 
+	/**
+	 * Add the text editing modal
+	 *
+	 * @since    2.0.0
+	 */
 	public function add_editor_modal() {
 
 		/**
@@ -320,11 +336,17 @@ class Simple_Live_Editor_Admin {
 
 			echo '<div class="sle-modal" data-remodal-id="sle-editor-modal">';
 			echo '<button data-remodal-action="close" class="remodal-close"></button>';
+			set_user_setting ( 'editor', 'tinymce' );
 			wp_editor( '', 'sle-editor', $settings );
 			echo '</div>';
 		}
 	}
 
+	/**
+	 * Add the link editing modal
+	 *
+	 * @since    2.0.0
+	 */
 	public function add_link_edit_modal() {
 
 		/**
@@ -373,6 +395,11 @@ class Simple_Live_Editor_Admin {
 
 	}
 
+	/**
+	 * Prepare the template for editing
+	 *
+	 * @since    2.0.0
+	 */
 	public function prepare_template_for_editing( $template, $key_prefix = '', $post = false ) {
 
 		// Get the document
@@ -388,6 +415,11 @@ class Simple_Live_Editor_Admin {
 
 	}
 
+	/**
+	 * Get the current version of the template
+	 *
+	 * @since    2.0.0
+	 */
 	public function get_current_template( $template, $post ) {
 
 		// Get the start and end part of the path
@@ -624,30 +656,27 @@ class Simple_Live_Editor_Admin {
 			// Mark text nodes parents as editable elements unless, text node empty
 			if ( $element->nodeType === XML_TEXT_NODE && preg_match( '/\S/', $element->nodeValue ) ) {
 
-				/*$parent = pq( $element )->parent();
+				$parent = pq( $element )->parent();
 
 				// While the parent is 'Phrasing content or headings or paragraph' and not root element
-				while ( $parent->is( SLE_PHRASING_CONTENT . ', ' . SLE_HEADING_CONTENT . ', p' ) ) {
+				while ( $parent->is( SLE_EDITABLE_ELEMENTS ) || ( count( $parent->siblings() ) > 0 && count( $parent->siblings() ) === count( $parent->siblings( '.sle-editable-text' ) ) ) ) {
 
 					if ( $parent->is( 'html, body, .wp-sections, .wp-section' ) ) {
 						break;
 					}
 
-					$parent = $parent->parent();
+					if ( count( $parent->parent()->find( 'php' ) ) > 0 ) {
+						break;
+					} else {
+						$parent = $parent->parent();
+					}
 				}
 
 				// Mark as editable
 				$parent->addClass( 'sle-editable-text' );
 
 				// Remove any editable childs
-				$parent->find( '.sle-editable-text' )->removeClass( 'sle-editable-text' );*/
-
-				// Don't do anything if any of the children are php tags
-				if ( count( pq( $element )->parent()->parent()->find( 'php' ) ) > 0 ) {
-					continue;
-				}
-
-				pq( $element )->parent()->parent()->addClass( 'sle-editable-text' );
+				$parent->find( '.sle-editable-text' )->removeClass( 'sle-editable-text' );
 			}
 		}
 
