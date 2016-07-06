@@ -129,6 +129,11 @@ class Simple_Live_Editor {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-simple-live-editor-helpers.php';
 
 		/**
+		 * The customizer section class
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wp-customize-control-sle-section.php';
+
+		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-simple-live-editor-admin.php';
@@ -169,18 +174,32 @@ class Simple_Live_Editor {
 		$this->plugin_admin = new Simple_Live_Editor_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		/**
-		 * Customize view
+		 * Customize controls
+		 */
+		$this->loader->add_action( 'customize_controls_init', $this->plugin_admin, 'enqueue_styles' );
+		$this->loader->add_action( 'customize_register', $this->plugin_admin, 'add_customize_controls' );
+
+		/**
+		 * Customize preview
 		 * These hooks are actually in the public scope for them to work in the customize view
 		 * The customize view check needs to be done in the callback
 		 */
 		$this->loader->add_action( 'wp_enqueue_scripts', $this->plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $this->plugin_admin, 'enqueue_scripts' );
-		$this->loader->add_action( 'template_include', $this->plugin_admin, 'prepare_template_for_editing' );
+		$this->loader->add_action( 'template_include', $this->plugin_admin, 'serve_template' );
+		$this->loader->add_action( 'wp_footer', $this->plugin_admin, 'add_editor_modal' );
+		$this->loader->add_action( 'wp_footer', $this->plugin_admin, 'add_link_edit_modal' );
 
 		/**
 		 * Ajax
 		 */
+		$this->loader->add_action( 'wp_ajax_sle_get_content', $this->plugin_admin, 'get_content' );
 		$this->loader->add_action( 'wp_ajax_sle_save_content', $this->plugin_admin, 'save_content' );
+
+		/**
+		 * Duplicate an existing template when translated
+		 */
+		$this->loader->add_action( 'save_post', $this->plugin_admin, 'duplicate_template_on_translation', 999 );
 
 	}
 
@@ -207,14 +226,14 @@ class Simple_Live_Editor {
 				$post = get_post( $_GET['post'] );
 				$typenow = $post->post_type;
 			}
-		}	
+		}
 
 		// Show the SLE notification only for add new page and edit existing page
 		if ( ( $pagenow === 'post.php' || $pagenow === 'post-new.php') && $typenow === 'page' ) {
 			$this->loader->add_action( 'admin_enqueue_scripts', $this->plugin_admin, 'enqueue_sle_notice_styles' );
 			$this->loader->add_action( 'admin_notices', $this->plugin_admin, 'show_sle_notice' );
 		}
-	}	
+	}
 
 	/**
 	 * Define contants used by the plugin
@@ -224,10 +243,11 @@ class Simple_Live_Editor {
 	 */
 	private function define_constants() {
 
-		define( 'SLE_PHRASING_CONTENT', 'a, abbr, map area, audio, b, bdi, bdo, br, button, canvas, cite, code, data, datalist, del, dfn, em, embed, i, iframe, img, input, ins, kbd, keygen, label, map, mark, math, meter, noscript, object, output, progress, q, ruby, s, samp, script, select, small, span, strong, sub, sup, svg, template, textarea, time, u, var, video, wbr, text' );
+		define( 'SLE_PHRASING_CONTENT', 'a, abbr, map, area, audio, b, bdi, bdo, br, button, canvas, cite, code, data, datalist, del, dfn, em, embed, i, iframe, img, input, ins, kbd, keygen, label, map, mark, math, meter, noscript, object, output, progress, q, ruby, s, samp, script, select, small, span, strong, sub, sup, svg, template, textarea, time, u, var, video, wbr, text' );
 
 		define( 'SLE_HEADING_CONTENT', 'h1, h2, h3, h4, h5, h6' );
 
+		define( 'SLE_EDITABLE_ELEMENTS', SLE_PHRASING_CONTENT . ', ' . SLE_HEADING_CONTENT . ', p, ul, ol, li' );
 	}
 
 	/**

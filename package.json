@@ -1,6 +1,6 @@
 {
   "name": "simple-live-editor",
-  "version": "1.0.1",
+  "version": "2.0",
   "description": "Simple live editor for WordPress",
   "main": "simple-live-editor.php",
   "author": "Harri Heljala <harri@htmltowordpress.io>",
@@ -20,7 +20,8 @@
     "management"
   ],
   "dependencies": {
-    "medium-editor": "html2wp/medium-editor#dev"
+    "remodal": "^1.0.7",
+    "sortablejs": "git://github.com/RubaXa/Sortable"
   },
   "devDependencies": {}
 }
