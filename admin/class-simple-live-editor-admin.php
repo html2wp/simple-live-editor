@@ -155,6 +155,11 @@ class Simple_Live_Editor_Admin {
 		}
 	}
 
+	/**
+	 * Duplicate the template when a second language translation is added for a default language version of a page
+	 *
+	 * @since    2.0.0
+	 */
 	function duplicate_template_on_translation( $post_id ) {
 
 		global $post;
@@ -235,6 +240,11 @@ class Simple_Live_Editor_Admin {
 		copy( $original_page_template, $new_page_template );
 	}
 
+	/**
+	 * Add the customizer menu items
+	 *
+	 * @since    2.0.0
+	 */
 	public function add_customize_controls( $wp_customize ) {
 
 		/**
@@ -304,6 +314,11 @@ class Simple_Live_Editor_Admin {
 
 	}
 
+	/**
+	 * Add the text editing modal
+	 *
+	 * @since    2.0.0
+	 */
 	public function add_editor_modal() {
 
 		/**
@@ -327,6 +342,11 @@ class Simple_Live_Editor_Admin {
 		}
 	}
 
+	/**
+	 * Add the link editing modal
+	 *
+	 * @since    2.0.0
+	 */
 	public function add_link_edit_modal() {
 
 		/**
@@ -375,6 +395,11 @@ class Simple_Live_Editor_Admin {
 
 	}
 
+	/**
+	 * Prepare the template for editing
+	 *
+	 * @since    2.0.0
+	 */
 	public function prepare_template_for_editing( $template, $key_prefix = '', $post = false ) {
 
 		// Get the document
@@ -390,6 +415,11 @@ class Simple_Live_Editor_Admin {
 
 	}
 
+	/**
+	 * Get the current version of the template
+	 *
+	 * @since    2.0.0
+	 */
 	public function get_current_template( $template, $post ) {
 
 		// Get the start and end part of the path
