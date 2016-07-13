@@ -34,6 +34,8 @@
 			return '+' + value + '[*]';
 		}).join( ',' );
 
+		extended_valid_elements += ', +div[*]'
+
 		settings.forced_root_block = false;
 		settings.height = '300';
 		settings.allow_html_in_named_anchor = true;
