@@ -773,7 +773,7 @@ class Simple_Live_Editor_Admin {
 		// Create the folders
 		$dir = dirname( $path );
 		if ( ! is_dir( $dir ) ) {
-			mkdir( $dir, 0764, true );
+			mkdir( $dir, 0774, true );
 		}
 
 		/**
