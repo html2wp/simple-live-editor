@@ -752,6 +752,9 @@ class Simple_Live_Editor_Admin {
 		 * Build the path to save the template
 		 */
 
+		// For windows
+		$template = str_replace( '\\\\', '\\', $template );
+
 		// Get the end part of the path
 		$path = Helpers::replace_first_occurrence( $template, get_stylesheet_directory(), '' );
 
