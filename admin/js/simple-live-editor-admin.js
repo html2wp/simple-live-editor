@@ -48,7 +48,7 @@
 			var $target = $( '.sle-editable-text[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
 
 			settings.init_instance_callback = function( editor ) {
-				editor.setContent( $target.html() );
+				editor.setContent( filterCustomizeParamsFromHTML( $target.html() ) );
 			}
 
 			settings.setup = function( editor ) {
@@ -85,7 +85,7 @@
 
 			var $target = $( '.sle-editable-link[data-sle-dom-index=' + $( this ).data( 'sle-target' ) + ']' );
 
-			$( '.sle-link-editor' ).val( $target.attr( 'href' ) );
+			$( '.sle-link-editor' ).val( filterCustomizeParamsFromURL( $target.attr( 'href' ) ) );
 
 			linkModal.open();
 
@@ -325,6 +325,49 @@
 			} else {
 				return false;
 			}
+		}
+
+		function filterCustomizeParamsFromHTML( html ) {
+
+			var parsed = $( html ).each( function() {
+
+				if ( ! $( this ).is( 'a[href]' ) ) {
+					return true;
+				}
+
+				var newHref = filterCustomizeParamsFromURL( $( this ).attr( 'href' ) );
+
+				$( this ).attr( 'href', newHref );
+
+			});
+
+			var result = '';
+
+			parsed.each( function() {
+				if ( this.outerHTML ) {
+					result += this.outerHTML;
+				}
+			});
+
+			return result;
+		}
+
+		function filterCustomizeParamsFromURL( url ) {
+
+			var	queryStart = url.indexOf( '?' );
+
+			if ( queryStart > -1 ) {
+				var query = $.query.parseNew( url.substring( queryStart + 1 ) );
+				query = query.REMOVE( 'customize_changeset_uuid' );
+				query = query.REMOVE( 'customize_messenger_channel' );
+				url = url.substring( 0, queryStart );
+
+				if ( query.toString().length > 0 ) {
+					url += '?' + query.toString();
+				}
+			}
+
+			return url;
 		}
 
 		/**

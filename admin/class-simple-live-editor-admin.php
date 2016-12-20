@@ -125,6 +125,9 @@ class Simple_Live_Editor_Admin {
 			// TinyMCE
 			wp_enqueue_script( 'editor' );
 
+			// jquery.query-object.js
+			wp_enqueue_script( 'jquery-query-object', Helpers::get_dir_url( __FILE__ ) . '../node_modules/jquery-query-object/jquery.query-object.js' );
+
 			// remodal.js
 			wp_enqueue_script( 'remodal', Helpers::get_dir_url( __FILE__ ) . '../node_modules/remodal/dist/remodal.js' );
 
@@ -132,7 +135,7 @@ class Simple_Live_Editor_Admin {
 			wp_enqueue_script( 'sortable', Helpers::get_dir_url( __FILE__ ) . '../node_modules/sortablejs/Sortable.js' );
 
 			// The plugin javascript
-			wp_enqueue_script( $this->plugin_name, Helpers::get_dir_url( __FILE__ ) . 'js/simple-live-editor-admin.js', array( 'jquery', 'remodal', 'editor', 'sortable' ), $this->version, false );
+			wp_enqueue_script( $this->plugin_name, Helpers::get_dir_url( __FILE__ ) . 'js/simple-live-editor-admin.js', array( 'jquery', 'jquery-query-object', 'remodal', 'editor', 'sortable' ), $this->version, false );
 
 			/**
 			 * Pass settings to javascript
