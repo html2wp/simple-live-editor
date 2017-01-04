@@ -12,3 +12,15 @@ Edit any text or images that are contained as HTML in your template files. Editi
 
 ## How to use the plugin?
 Go to the customize view and hover on any text or image and click the editing icon to edit them.
+
+## Changelog
+
+### 2.0
+* New editing capabilities (tinymce, bg-images, etc.) with page builder features
+
+### 1.0.1
+* Support for php version 5.3 and not dependent on libxml anymore
+* Added notification about editing capabilities in page editing view
+
+### 1.0
+* First release with text and image editing
