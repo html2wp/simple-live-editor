@@ -29,6 +29,9 @@ Go to the customize view and hover on any text or image and click the editing ic
 
 == Changelog ==
 
+= 2.1 =
+* Support for WordPress 4.7
+
 = 2.0 =
 * New editing capabilities (tinymce, bg-images, etc.) with page builder features
 

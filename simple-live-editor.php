@@ -16,7 +16,7 @@
  * Plugin Name:       Simple Live Editor
  * Plugin URI:        http://htmltowordpress.io/
  * Description:       Edit your content live from the WordPress customize view - content management made fast and easy.
- * Version:           2.0
+ * Version:           2.1
  * Author:            htmltowordpress.io
  * Author URI:        http://htmltowordpress.io/
  * License:           GPL-2.0+
