@@ -20,6 +20,7 @@
     "management"
   ],
   "dependencies": {
+    "jquery-query-object": "^2.2.3",
     "remodal": "^1.0.7",
     "sortablejs": "git://github.com/RubaXa/Sortable"
   },

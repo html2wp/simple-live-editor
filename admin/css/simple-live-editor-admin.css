@@ -69,6 +69,7 @@
 	background: #23282D;
 	color: #eee;
 	z-index: 2147483647; /* max int32 z-index */
+	padding-top: 0;
 }
 
 .sle-edit-icon:hover {
